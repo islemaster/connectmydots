@@ -1,0 +1,23 @@
+{
+  "name": "connectmydots",
+  "version": "1.0.0",
+  "description": "Professional Network Visualization",
+  "main": "package.js",
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "normalize.css": "^3.0.3"
+  },
+  "devDependencies": {
+    "del": "^1.2.0",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.1.0",
+    "gulp-jade": "^1.0.1",
+    "gulp-jshint": "^1.11.0",
+    "gulp-sass": "^2.0.1"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Brad Buchanan",
+  "license": "GNU GPL 2"
+}
