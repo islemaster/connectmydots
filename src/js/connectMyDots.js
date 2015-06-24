@@ -1,5 +1,3 @@
-
-
 var nodes = [
   {
     id: 0,
@@ -28,17 +26,9 @@ $(function () {
         right = $(event.target).data('to');
 
     if ($(event.target).is(':checked')) {
-      // Add edge
-      edges.push({
-        left: left,
-        right: right
-      });
+      edges.push(edge(left, right));
     } else {
-      // Remove edge
-      var index = edges.findIndex(e => e.left === left && e.right === right);
-      if (index >= 0) {
-        edges.splice(index, 1);
-      }
+      edges.removeIf(e => e.connects(left, right));
     }
   });
 });
@@ -75,7 +65,7 @@ function showNodeDetails(node) {
     $('<div>')
       .append(
         $('<input type="checkbox">')
-          .attr('checked', edges.some(e => e.left === node && e.right === otherNode))
+          .attr('checked', edges.some(e => e.connects(node, otherNode)))
           .data('from', node)
           .data('to', otherNode))
       .append(
