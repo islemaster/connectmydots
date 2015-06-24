@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title Connect My Dots
+    link(rel='stylesheet', href='lib/normalize.css', type='text/css')
+    link(rel='stylesheet', href='css/layout.css', type='text/css')
+    link(rel='stylesheet', href='css/style.css', type='text/css')
+    script(src='lib/jquery-2.1.3.min.js')
+    script(src='js/polyfills.js', charset='utf-8')
+    script(src='js/accordion.js', charset='utf-8')
+    script(src='js/connectMyDots.js', charset='utf-8')
+
+  body
+    .box
+      .header-row
+        h1 Connect My Dots
+
+      .body-row
+        .left-column
+          include ./jade/nodeList.jade
+
+        .center-column
+
+        .right-column
+
+      include ./jade/foot.html

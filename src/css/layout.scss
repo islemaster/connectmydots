@@ -1,0 +1,65 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.box {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+
+  .header-row {
+    flex: 0 0 auto;
+  }
+
+  .body-row {
+    flex: 1 1 auto;
+    flex-flow: row;
+    display: flex;
+    flex-flow: row nowrap;
+
+    .left-column {
+      flex: 0 0 400px;
+      display: flex;
+      flex-flow: column nowrap;
+
+      h1 {
+        flex: 0 0 auto;
+      }
+
+      .collapsable {
+        flex: 1 1 auto;
+        display: flex;
+        flex-flow: column nowrap;
+      }
+
+      #ace-data-editor {
+        flex: 1 1 auto;
+      }
+
+      #ace-script-editor {
+        flex: 1 1 auto;
+      }
+    }
+
+    .center-column {
+      flex: 1 1 auto;
+      display: flex;
+      flex-flow: column nowrap;
+
+      svg {
+        flex: 1 1 auto;
+      }
+    }
+
+    .right-column {
+      flex: 0 0 200px;
+      display: none;
+      flex-flow: column nowrap;
+    }
+  }
+
+  .footer-row {
+    flex: 0 0 auto;
+  }
+}
