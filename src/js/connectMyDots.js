@@ -16,7 +16,8 @@ var edges = [
 $(function () {
   renderNodeList();
   $('#node-list input[type=button]').click(function () {
-    newNode($('#node-list input[type=text]').val());
+    var newName = $('#node-list input[type=text]').val();
+    addNode(newName);
     $('#node-list input[type=text]').val('');
   });
 
@@ -44,14 +45,16 @@ function renderNodeList() {
   });
 }
 
-function newNode(name) {
-  nodes.push({
+function addNode(name) {
+  var newNode = {
     id: 0,
     name: name,
     type: 'person',
     date: '1987-08-18'
-  });
+  };
+  nodes.push(newNode);
   renderNodeList();
+  showNodeDetails(newNode);
 }
 
 function showNodeDetails(node) {
