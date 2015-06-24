@@ -1,5 +1,5 @@
 
-var dataEditor, scriptEditor, dataSrc, renderSrc, data, render;
+var dataEditor, scriptEditor, dataSrc, scriptSrc, data, render;
 
 function rebuildGraph() {
   var rawData = dataEditor.getValue();
