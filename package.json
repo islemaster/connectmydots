@@ -13,6 +13,7 @@
     "gulp-babel": "^5.1.0",
     "gulp-jade": "^1.0.1",
     "gulp-jshint": "^1.11.0",
+    "gulp-mocha": "^2.1.2",
     "gulp-sass": "^2.0.1"
   },
   "scripts": {
