@@ -27,14 +27,14 @@ html
           include ./jade/nodeList.jade
           
           h1(data-for='edit-json') Edit JSON
-          #edit-json.collapsable(style='display:none')
+          #edit-json.collapsable.flex-column(style='display:none')
             #data-parse-status.status-bar
             pre var data = {
             #ace-data-editor
             pre }
             
           h1(data-for='edit-script') Edit Script
-          #edit-script.collapsable(style='display:none')
+          #edit-script.collapsable.flex-column(style='display:none')
             #script-parse-status.status-bar
             pre function render(data, target, forceGraph) {
             #ace-script-editor

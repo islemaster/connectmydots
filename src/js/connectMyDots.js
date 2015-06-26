@@ -3,7 +3,6 @@ var nodeListController;
 function updateData() {
   var nodes = nodeListController.getNodes();
   var edges = nodeListController.getEdges();
-  nodes.sort((a, b) => a.name < b.name ? -1 : 1);
   var i = 0;
   var nodeData = nodes.map(n => $.extend({}, n, {id: i++}));
   var edgeData = edges.map(e => {

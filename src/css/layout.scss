@@ -3,6 +3,11 @@ html, body {
   margin: 0;
 }
 
+.flex-column {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
 .box {
   display: flex;
   flex-flow: column nowrap;
@@ -20,8 +25,7 @@ html, body {
 
     .left-column {
       flex: 0 0 400px;
-      display: flex;
-      flex-flow: column nowrap;
+      @extend .flex-column;
 
       h1 {
         flex: 0 0 auto;
@@ -29,8 +33,6 @@ html, body {
 
       .collapsable {
         flex: 1 1 auto;
-        display: flex;
-        flex-flow: column nowrap;
         overflow-y: auto;
       }
 
@@ -45,8 +47,7 @@ html, body {
 
     .center-column {
       flex: 1 1 auto;
-      display: flex;
-      flex-flow: column nowrap;
+      @extend .flex-column;
 
       svg {
         flex: 1 1 auto;
@@ -55,8 +56,8 @@ html, body {
 
     .right-column {
       flex: 0 0 200px;
+      @extend .flex-column;
       display: none;
-      flex-flow: column nowrap;
     }
   }
 

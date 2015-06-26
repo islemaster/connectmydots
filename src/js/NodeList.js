@@ -73,6 +73,7 @@ export function NodeList(rootDiv, onChange) {
       guid: guid()
     };
     nodes.push(newNode);
+    nodes.sort((a, b) => a.name < b.name ? -1 : 1);
     saveData();
     render();
     selectNode(newNode);
@@ -84,11 +85,20 @@ export function NodeList(rootDiv, onChange) {
     render();
   }
 
-  // "Add Node" button handler
+  // "Add Node" handlers
+  rootDiv.find('#new-node-name').keydown((e) => {
+    if (e.which === 13) { // Enter key
+      rootDiv.find('#add-node').click();
+      e.preventDefault();
+    }
+  });
   rootDiv.find("#add-node").click(() => {
     var newNodeNameField = rootDiv.find('#new-node-name');
     addNode(newNodeNameField.val());
     newNodeNameField.val('');
+    $('#node-list').animate({
+        scrollTop: $(".selected-node").offset().top
+    }, 800);
   });
 
   // Change handler for edge checkboxes
