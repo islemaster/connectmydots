@@ -34,6 +34,14 @@ td.shrink-to-fit {
     margin: 0;
     padding: 0.5em;
     padding-bottom: 0.2em;
+
+    span {
+      display: inline-block;
+      color: $header_gray;
+      background-color: whitesmoke;
+      padding: 2px;
+      border-radius: 4px;
+    }
   }
 }
 
