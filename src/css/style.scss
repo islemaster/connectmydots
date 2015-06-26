@@ -4,6 +4,10 @@ body {
   color: whitesmoke;
   background: black;
   overflow: hidden;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 input {
@@ -114,6 +118,32 @@ $my-yellow: #FFD34E;
 $my-goldenrod: #DB9E36;
 $my-tomato: #BD4932;
 $whitesmoke: #eee;
+
+#node-table {
+  width: 100%;
+
+  tr {
+    cursor: pointer;
+
+    &:nth-child(odd) {
+      background-color: #333;
+    }
+
+    &.selected-node {
+      background-color: $my-goldenrod;
+      color: black;
+    }
+
+    &:hover {
+      background-color: $my-yellow;
+      color: black;
+    }
+  }
+
+  td {
+    line-height: 1.1;
+  }
+}
 
 .node-group {
   circle {

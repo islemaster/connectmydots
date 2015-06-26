@@ -25,36 +25,37 @@ export function NodeList(rootDiv, onChange) {
   };
 
   var render = function () {
-    var $nodeList = rootDiv.find('ul');
-    $nodeList.empty();
+    var nodeTable = rootDiv.find('#node-table');
+    nodeTable.empty();
     nodes.forEach(function (node) {
-      $('<li>')
-        .text(node.name)
-        .click(selectNode.bind(this, node))
-        .appendTo($nodeList);
+      var hasSelectedNode = !!(selectedNode);
+      var isSelectedNode = hasSelectedNode && (selectedNode.guid === node.guid);
+
+      var row = $('<tr>');
+      var col1 = $('<td>');
+      var col2 = $('<td>');
+      var col3 = $('<td>');
+
+      col1.add(col2).click(selectNode.bind(this, node));
+      col2.text(node.name);
+
+      if (isSelectedNode) {
+        row.addClass('selected-node');
+        col1.text('X');
+      } else if (hasSelectedNode) {
+        var isConnectedToSelectedNode = edges.some(
+          e => Edge.connects(e, selectedNode, node));
+        let checkbox = $('<input type="checkbox">')
+          .attr('checked', isConnectedToSelectedNode)
+          .data('from', selectedNode)
+          .data('to', node);
+        col3.append(checkbox);
+      }
+
+      nodeTable.append(
+        row.append(col1, col2, col3)
+      );
     });
-
-    var $connectionsList = $('.connections-list');
-    $connectionsList.empty();
-    if (selectedNode) {
-      nodes.forEach(function (otherNode) {
-        if (otherNode === selectedNode) {
-          return;
-        }
-
-        $('<div>')
-          .append(
-            $('<input type="checkbox">')
-              .attr('checked', edges.some(e => Edge.connects(e, selectedNode, otherNode)))
-              .data('from', selectedNode)
-              .data('to', otherNode))
-          .append(
-            $('<label>')
-              .text(otherNode.name))
-          .appendTo($connectionsList);
-
-      });
-    }
   };
 
   var addNode = function (nodeName) {
@@ -84,7 +85,7 @@ export function NodeList(rootDiv, onChange) {
   });
 
   // Change handler for edge checkboxes
-  $('.connections-list').on('change', 'input[type=checkbox]', event => {
+  $('#node-table').on('change', 'input[type=checkbox]', event => {
     var left = $(event.target).data('from'),
         right = $(event.target).data('to');
 
