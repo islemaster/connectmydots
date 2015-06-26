@@ -835,11 +835,15 @@ $(function () {
 {"guidA":77,"guidB":80},
 {"guidA":78,"guidB":79}];
 
-    nodeListController.setContent(nodes, edges);
+    if (confirm("Are you sure?  This will overwrite your saved graph!")) {
+      nodeListController.setContent(nodes, edges);
+    }
   });
 
   $('.header-row .clearContent').click(() => {
-    nodeListController.clearContent();
+    if (confirm("Are you sure?  This will overwrite your saved graph!")) {
+      nodeListController.clearContent();
+    }
   });
 
   nodeListController = NodeList($('#node-list'), updateData);
