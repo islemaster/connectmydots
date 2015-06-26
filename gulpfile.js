@@ -58,5 +58,5 @@ gulp.task('test', ['babel', 'babel-test'], function () {
 gulp.task('default', ['copy-lib', 'babel', 'jade', 'sass'], function () {
   gulp.watch('./src/**/*.js', ['babel', 'test']);
   gulp.watch('./src/**/*.scss', ['sass']);
-  gulp.watch('./src/**/*.jade', ['jade']);
+  gulp.watch(['./src/**/*.jade', './src/**/*.html'], ['jade']);
 });
