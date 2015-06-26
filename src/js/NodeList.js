@@ -24,6 +24,22 @@ export function NodeList(rootDiv, onChange) {
     }
   };
 
+  var setContent = function (nodeData, edgeData) {
+    nodes = nodeData;
+    edges = edgeData;
+    saveData();
+    render();
+    onChange();
+  };
+
+  var clearContent = function () {
+    nodes = [];
+    edges = [];
+    saveData();
+    render();
+    onChange();
+  };
+
   var render = function () {
     var nodeTable = rootDiv.find('#node-table');
     nodeTable.empty();
@@ -158,6 +174,8 @@ export function NodeList(rootDiv, onChange) {
     getNodes: () => nodes,
     getEdges: () => edges,
     render: render,
-    selectNode: selectNode
+    selectNode: selectNode,
+    setContent: setContent,
+    clearContent: clearContent
   };
 };
