@@ -25,6 +25,16 @@ function updateData() {
 
 // Onload
 $(function () {
+  $('#about').dialog({
+    autoOpen: false,
+    title: "About Connect My Dots",
+    width: 600
+  });
+
+  $('.header-row .about').click(() => {
+    $('#about').dialog('open');
+  });
+
   nodeListController = NodeList($('#node-list'), updateData);
   nodeListController.render();
   updateData();

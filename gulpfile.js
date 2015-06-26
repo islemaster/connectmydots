@@ -13,7 +13,7 @@ gulp.task('clean', function (cb) {
 gulp.task('copy-lib', function () {
   return gulp.src([
       './node_modules/normalize.css/normalize.css',
-      './lib/*'
+      './lib/**'
     ]).pipe(gulp.dest('./build/lib'));
 });
 

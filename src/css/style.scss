@@ -1,4 +1,9 @@
-@import url(http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+$my-blue: #105B63;
+$my-beige: #FFFAD5;
+$my-yellow: #FFD34E;
+$my-goldenrod: #DB9E36;
+$my-tomato: #BD4932;
+$whitesmoke: #eee;
 
 $header_gray: #2F3129;
 
@@ -41,6 +46,16 @@ td.shrink-to-fit {
       background-color: whitesmoke;
       padding: 2px;
       border-radius: 4px;
+    }
+  }
+
+  .about {
+    padding: 8px;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+      color: $my-yellow;
     }
   }
 }
@@ -126,13 +141,6 @@ pre {
 #graph-settings {
   padding: 2em;
 }
-
-$my-blue: #105B63;
-$my-beige: #FFFAD5;
-$my-yellow: #FFD34E;
-$my-goldenrod: #DB9E36;
-$my-tomato: #BD4932;
-$whitesmoke: #eee;
 
 #node-table {
   width: 100%;
