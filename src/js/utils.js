@@ -1,3 +1,13 @@
+export function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+};
+
 if (!Array.prototype.find) {
   Array.prototype.find = function(predicate) {
     if (this == null) {
@@ -45,6 +55,10 @@ if (!Array.prototype.findIndex) {
 }
 
 if (!Array.prototype.removeIf) {
+  /**
+   * Modify the array in-place, removing elements that match the given predicate.
+   * @param {function(element:*,index:number,list:Array):boolean} predicate
+   */
   Array.prototype.removeIf = function (predicate) {
     if (this == null) {
       throw new TypeError('Array.prototype.removeIf called on null or undefined');

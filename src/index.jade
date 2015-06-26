@@ -8,11 +8,15 @@ html
     script(src='lib/ace.js')
     script(src='lib/d3.v3.min.js')
     script(src='lib/jquery-2.1.3.min.js')
-    script(src='js/polyfills.js', charset='utf-8')
+    script.
+      // HACK - provide a dumb exports object for global use
+      var exports = {};
+    script(src='js/utils.js', charset='utf-8')
     script(src='js/accordion.js', charset='utf-8')
-    script(src='js/edge.js', charset='utf-8')
-    script(src='js/connectMyDots.js', charset='utf-8')
+    script(src='js/NodeList.js')
+    script(src='js/Edge.js', charset='utf-8')
     script(src='js/liveEdit.js')
+    script(src='js/connectMyDots.js', charset='utf-8')
 
   body
     .box
@@ -23,14 +27,14 @@ html
           include ./jade/nodeList.jade
           
           h1(data-for='edit-json') Edit JSON
-          #edit-json.collapsable
+          #edit-json.collapsable(style='display:none')
             #data-parse-status.status-bar
             pre var data = {
             #ace-data-editor
             pre }
             
           h1(data-for='edit-script') Edit Script
-          #edit-script.collapsable
+          #edit-script.collapsable(style='display:none')
             #script-parse-status.status-bar
             pre function render(data, target, forceGraph) {
             #ace-script-editor

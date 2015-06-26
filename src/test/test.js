@@ -1,5 +1,5 @@
 var assert = require("assert");
-var polyfill = require("../js/polyfills");
+var guid = require("../js/utils").guid;
 describe('Array', function () {
   it('should remove if predicate is true', function () {
     let array = [1, 2, 3];
