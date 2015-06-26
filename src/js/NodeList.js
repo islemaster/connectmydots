@@ -35,7 +35,7 @@ export function NodeList(rootDiv, onChange) {
 
       // Clicking on the first column should select the node.
       var col1 = $('<td>')
-        .click(selectNode.bind(this, node))
+        .click(toggleNodeSelection.bind(this, node))
         .text(node.name);
 
       // Not the second column, since it contains the checkbox.
@@ -80,8 +80,30 @@ export function NodeList(rootDiv, onChange) {
     onChange();
   }
 
+  var removeNode = function (node) {
+    edges.removeIf(x => x.guidA === node.guid || x.guidB === node.guid);
+    nodes.removeIf(x => x.guid === node.guid);
+    saveData();
+    render();
+    selectNode(null);
+    onChange();
+  }
+
+  var toggleNodeSelection = function (node) {
+    if (!node || selectedNode && node.guid === selectedNode.guid) {
+      selectedNode = null;
+    } else {
+      selectedNode = nodes.find(n => n.guid === node.guid);
+    }
+    render();
+  };
+
   var selectNode = function (node) {
-    selectedNode = nodes.find(n => n.guid === node.guid);
+    if (node) {
+      selectedNode = nodes.find(n => n.guid === node.guid);
+    } else {
+      selectedNode = null;
+    }
     render();
   }
 
@@ -113,6 +135,18 @@ export function NodeList(rootDiv, onChange) {
     }
     saveData();
     onChange();
+  });
+
+  // Capture backspace/delete for removing nodes
+  $('html').keydown(e => {
+    if (!$(e.target).is('input')) {
+      if (e.which === 8 || e.which === 46) { // backspace or delete
+        e.preventDefault();
+        if (selectedNode) {
+          removeNode(selectedNode);
+        }
+      }
+    }
   });
 
   // Initial set-up (on page loaded)
