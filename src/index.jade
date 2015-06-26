@@ -26,14 +26,14 @@ html
         .left-column
           include ./jade/nodeList.jade
           
-          h1(data-for='edit-json') Edit JSON
+          h1(data-for='edit-json', style='display:none') Edit JSON
           #edit-json.collapsable.flex-column(style='display:none')
             #data-parse-status.status-bar
             pre var data = {
             #ace-data-editor
             pre }
             
-          h1(data-for='edit-script') Edit Script
+          h1(data-for='edit-script', style='display:none') Edit Script
           #edit-script.collapsable.flex-column(style='display:none')
             #script-parse-status.status-bar
             pre function render(data, target, forceGraph) {
