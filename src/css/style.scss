@@ -1,3 +1,5 @@
+@import url(http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
 $header_gray: #2F3129;
 
 body {
@@ -12,6 +14,11 @@ body {
 
 input {
   color: black;
+}
+
+td.shrink-to-fit {
+  width: 1%;
+  white-space: nowrap;
 }
 
 .header-row {
@@ -141,7 +148,7 @@ $whitesmoke: #eee;
   }
 
   td {
-    line-height: 1.1;
+    padding: 4px 15px;
   }
 }
 

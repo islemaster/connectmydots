@@ -16,8 +16,8 @@ export function NodeList(rootDiv, onChange) {
     try {
       var storedNodes = localStorage.getItem('cmdots-nodes');
       var storedEdges = localStorage.getItem('cmdots-edges');
-      nodes = JSON.parse(storedNodes);
-      edges = JSON.parse(storedEdges);
+      nodes = JSON.parse(storedNodes) || [];
+      edges = JSON.parse(storedEdges) || [];
     } catch (e) {
       nodes = [];
       edges = [];
@@ -32,28 +32,35 @@ export function NodeList(rootDiv, onChange) {
       var isSelectedNode = hasSelectedNode && (selectedNode.guid === node.guid);
 
       var row = $('<tr>');
-      var col1 = $('<td>');
-      var col2 = $('<td>');
-      var col3 = $('<td>');
 
-      col1.add(col2).click(selectNode.bind(this, node));
-      col2.text(node.name);
+      // Clicking on the first column should select the node.
+      var col1 = $('<td>')
+        .click(selectNode.bind(this, node))
+        .text(node.name);
+
+      // Not the second column, since it contains the checkbox.
+      var col2 = $('<td>')
+        .addClass('shrink-to-fit');
+      var checkbox = $('<input type="checkbox">')
+        .appendTo(col2);
+
 
       if (isSelectedNode) {
         row.addClass('selected-node');
-        col1.text('X');
+        checkbox.hide();
       } else if (hasSelectedNode) {
         var isConnectedToSelectedNode = edges.some(
           e => Edge.connects(e, selectedNode, node));
-        let checkbox = $('<input type="checkbox">')
+        checkbox
           .attr('checked', isConnectedToSelectedNode)
           .data('from', selectedNode)
           .data('to', node);
-        col3.append(checkbox);
+      } else {
+        checkbox.css('visibility', 'hidden');
       }
 
       nodeTable.append(
-        row.append(col1, col2, col3)
+        row.append(col1, col2)
       );
     });
   };
