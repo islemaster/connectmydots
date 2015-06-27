@@ -17,6 +17,11 @@ gulp.task('copy-lib', function () {
     ]).pipe(gulp.dest('./build/lib'));
 });
 
+gulp.task('copy-assets', function () {
+  return gulp.src('./src/assets/**/*')
+      .pipe(gulp.dest('./build/assets'));
+});
+
 gulp.task('babel', function () {
   return gulp.src('./src/js/*.js')
       .pipe(babel())
@@ -55,7 +60,7 @@ gulp.task('test', ['babel', 'babel-test'], function () {
       .pipe(mocha({reporter: 'spec'}));
 });
 
-gulp.task('default', ['copy-lib', 'babel', 'jade', 'sass'], function () {
+gulp.task('default', ['copy-lib', 'copy-assets', 'babel', 'jade', 'sass'], function () {
   gulp.watch('./src/**/*.js', ['babel', 'test']);
   gulp.watch('./src/**/*.scss', ['sass']);
   gulp.watch(['./src/**/*.jade', './src/**/*.html'], ['jade']);
