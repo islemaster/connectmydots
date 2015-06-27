@@ -1,6 +1,6 @@
 {
   "name": "connectmydots",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Professional Network Visualization",
   "main": "package.js",
   "dependencies": {
