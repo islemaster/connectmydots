@@ -1,4 +1,4 @@
-
+var selectedGraphNode;
 var dataEditor, scriptEditor, dataSrc, data;
 
 function render(data, target, forceGraph) {
@@ -87,10 +87,16 @@ function render(data, target, forceGraph) {
       })
       .call(force.drag)
       .on('click', function (d) {
-          link.classed('hover', function (l) {
-             return l.source.id === d.id
-                 || l.target.id === d.id;
-          });
+          if (d === selectedGraphNode) {
+            selectedGraphNode = null;
+            link.classed('hover', false);
+          } else {
+            selectedGraphNode = d;
+            link.classed('hover', function (l) {
+               return l.source.id === d.id
+                   || l.target.id === d.id;
+            });
+          }
       })
       .on('mouseout', function () {
           //link.classed('hover', false);
