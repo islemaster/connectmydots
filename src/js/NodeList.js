@@ -107,11 +107,10 @@ export function NodeList(rootDiv, onChange) {
 
   var toggleNodeSelection = function (node) {
     if (!node || selectedNode && node.guid === selectedNode.guid) {
-      selectedNode = null;
+      selectNode(null);
     } else {
-      selectedNode = nodes.find(n => n.guid === node.guid);
+      selectNode(node);
     }
-    render();
   };
 
   var selectNode = function (node) {
