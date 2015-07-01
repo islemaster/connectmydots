@@ -1,8 +1,9 @@
+var networkGraph;
 var nodeListController;
 
-function updateData() {
-  var nodes = nodeListController.getNodes();
-  var edges = nodeListController.getEdges();
+function updateGraphVisualization() {
+  var nodes = networkGraph.getNodes();
+  var edges = networkGraph.getEdges();
   var i = 0;
   var nodeData = nodes.map(n => $.extend({}, n, {id: i++}));
   var edgeData = edges.map(e => {
@@ -22,6 +23,25 @@ function updateData() {
   dataEditor.setValue(JSON.stringify(newData, null, 2));
   rebuildGraph();
 }
+
+var saveData = function () {
+  localStorage.setItem('cmdots-nodes', JSON.stringify(networkGraph.getNodes()));
+  localStorage.setItem('cmdots-edges', JSON.stringify(networkGraph.getEdges()));
+};
+
+var loadData = function () {
+  var nodes, edges;
+  try {
+    var storedNodes = localStorage.getItem('cmdots-nodes');
+    var storedEdges = localStorage.getItem('cmdots-edges');
+    nodes = JSON.parse(storedNodes) || [];
+    edges = JSON.parse(storedEdges) || [];
+  } catch (e) {
+    nodes = [];
+    edges = [];
+  }
+  networkGraph.setContent(nodes, edges);
+};
 
 // Onload
 $(function () {
@@ -46,7 +66,7 @@ $(function () {
       local: true,
       url: 'assets/demo.json',
       success: (data, status) => {
-        nodeListController.setContent(data.nodes, data.edges);
+        networkGraph.setContent(data.nodes, data.edges);
       },
       error: (jqXHR, status, errorThrown) => {
         console && console.log(`${status} : ${errorThrown}`);
@@ -56,11 +76,17 @@ $(function () {
 
   $('.header-row .clearContent').click(() => {
     if (confirm("Are you sure?  This will overwrite your saved graph!")) {
-      nodeListController.clearContent();
+      networkGraph.clearContent();
     }
   });
 
-  nodeListController = NodeList($('#node-list'), updateData);
+  networkGraph = NetworkGraph();
+  networkGraph.onChange(() => {
+    updateGraphVisualization();
+    saveData();
+  });
+
+  nodeListController = NodeList($('#node-list'), networkGraph);
   nodeListController.render();
-  updateData();
+  updateGraphVisualization();
 });
