@@ -1,6 +1,29 @@
 var networkGraph;
 var nodeListController;
 
+var selectedNode_ = null;
+
+/**
+ * Getter/setter for selected node
+ * @param {Object|null} [node] - if provided, sets selected node.  If omitted,
+          returns current selected node.
+ */
+function selectedNode(node) {
+  // Getter form - no argument
+  if (undefined === node) {
+    return selectedNode_;
+  }
+
+  // Setter form - object or null argument.
+  if (node) {
+    selectedNode_ = networkGraph.getNodes().find(n => n.guid === node.guid);
+  } else {
+    selectedNode_ = null;
+  }
+  nodeListController.render();
+  return selectedNode_;
+}
+
 function updateGraphVisualization() {
   var nodes = networkGraph.getNodes();
   var edges = networkGraph.getEdges();
@@ -86,7 +109,9 @@ $(function () {
     saveData();
   });
 
-  nodeListController = NodeList($('#node-list'), networkGraph);
+  nodeListController = NodeList($('#node-list'), networkGraph, {
+    selectedNode: selectedNode
+  });
   nodeListController.render();
   loadData();
   updateGraphVisualization();

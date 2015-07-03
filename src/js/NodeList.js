@@ -1,21 +1,19 @@
 /**
  * @param {jQuery} rootDiv
  * @param {NetworkGraph} networkGraph model
+ * @param {Object} callbacks
+ * @param {function} callbacks.selectedNode
  */
-export function NodeList(rootDiv, networkGraph) {
-  var selectedNode = null;
-
-  // What to do whenever our model data changes
-  networkGraph.onChange(() => {
-    render();
-  });
+export function NodeList(rootDiv, networkGraph, callbacks) {
+  /** @type {function} */
+  var selectedNode = callbacks.selectedNode;
 
   var render = function () {
     var nodeTable = rootDiv.find('#node-table');
     nodeTable.empty();
     networkGraph.getNodes().forEach(function (node) {
-      var hasSelectedNode = !!(selectedNode);
-      var isSelectedNode = hasSelectedNode && (selectedNode.guid === node.guid);
+      var hasSelectedNode = !!(selectedNode());
+      var isSelectedNode = hasSelectedNode && (selectedNode().guid === node.guid);
 
       var row = $('<tr>');
 
@@ -36,10 +34,10 @@ export function NodeList(rootDiv, networkGraph) {
         checkbox.hide();
       } else if (hasSelectedNode) {
         var isConnectedToSelectedNode = networkGraph.getEdges().some(
-          e => Edge.connects(e, selectedNode, node));
+          e => Edge.connects(e, selectedNode(), node));
         checkbox
           .attr('checked', isConnectedToSelectedNode)
-          .data('from', selectedNode)
+          .data('from', selectedNode())
           .data('to', node);
       } else {
         checkbox.css('visibility', 'hidden');
@@ -51,22 +49,16 @@ export function NodeList(rootDiv, networkGraph) {
     });
   };
 
+  // What to do whenever our model data changes
+  networkGraph.onChange(render);
+
   var toggleNodeSelection = function (node) {
-    if (!node || selectedNode && node.guid === selectedNode.guid) {
-      selectNode(null);
+    if (!node || selectedNode() && node.guid === selectedNode().guid) {
+      selectedNode(null);
     } else {
-      selectNode(node);
+      selectedNode(node);
     }
   };
-
-  var selectNode = function (node) {
-    if (node) {
-      selectedNode = networkGraph.getNodes().find(n => n.guid === node.guid);
-    } else {
-      selectedNode = null;
-    }
-    render();
-  }
 
   // "Add Node" handlers
   rootDiv.find('#new-node-name').keydown((e) => {
@@ -78,7 +70,7 @@ export function NodeList(rootDiv, networkGraph) {
   rootDiv.find("#add-node").click(() => {
     var newNodeNameField = rootDiv.find('#new-node-name');
     var newNode = networkGraph.addNode(newNodeNameField.val());
-    selectNode(newNode);
+    selectedNode(newNode);
     newNodeNameField.val('');
     $('#node-list').animate({
         scrollTop: $(".selected-node").offset().top
@@ -102,8 +94,8 @@ export function NodeList(rootDiv, networkGraph) {
     if (!$(e.target).is('input')) {
       if (e.which === 8 || e.which === 46) { // backspace or delete
         e.preventDefault();
-        if (selectedNode) {
-          networkGraph.removeNode(selectedNode);
+        if (selectedNode()) {
+          networkGraph.removeNode(selectedNode());
         }
       }
     }
@@ -111,7 +103,6 @@ export function NodeList(rootDiv, networkGraph) {
 
   // Export the public interface
   return {
-    render: render,
-    selectNode: selectNode
+    render: render
   };
 };
