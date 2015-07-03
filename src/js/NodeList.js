@@ -109,9 +109,6 @@ export function NodeList(rootDiv, networkGraph) {
     }
   });
 
-  // Initial set-up (on page loaded)
-  loadData();
-
   // Export the public interface
   return {
     render: render,

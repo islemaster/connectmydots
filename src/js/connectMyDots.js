@@ -88,5 +88,6 @@ $(function () {
 
   nodeListController = NodeList($('#node-list'), networkGraph);
   nodeListController.render();
+  loadData();
   updateGraphVisualization();
 });
