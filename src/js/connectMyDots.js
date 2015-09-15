@@ -3,6 +3,8 @@ var nodeListController;
 
 var selectedNode_ = null;
 
+var graphView = new GraphView();
+
 /**
  * Getter/setter for selected node
  * @param {Object|null} [node] - if provided, sets selected node.  If omitted,
@@ -17,8 +19,13 @@ function selectedNode(node) {
   // Setter form - object or null argument.
   if (node) {
     selectedNode_ = networkGraph.getNodes().find(n => n.guid === node.guid);
+    graphView.links().classed('to-selected-node', (l) => {
+        return l.source.guid === selectedNode_.guid ||
+               l.target.guid === selectedNode_.guid;
+      });
   } else {
     selectedNode_ = null;
+    graphView.links().classed('to-selected-node', false);
   }
   nodeListController.render();
   return selectedNode_;

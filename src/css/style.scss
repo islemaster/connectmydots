@@ -216,7 +216,7 @@ pre {
   stroke-opacity: 0.1;
   stroke-width: 1;
 
-  &.hover {
+  &.to-selected-node {
     stroke: $whitesmoke;
     stroke-opacity: 0.9;
     stroke-width: 1.5;

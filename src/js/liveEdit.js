@@ -1,5 +1,15 @@
-var selectedGraphNode;
 var dataEditor, scriptEditor, dataSrc, data;
+
+// d3 selector for link elements, modifiable
+var linkSelector;
+
+function GraphView() {
+
+}
+
+GraphView.prototype.links = function () {
+  return linkSelector;
+}
 
 function render(data, target, forceGraph) {
   var width = 1000,
@@ -72,6 +82,7 @@ function render(data, target, forceGraph) {
     .data(data.links)
     .enter().append("line")
     .attr("class", "link");
+  linkSelector = link;
 
   var nodes = svg.selectAll(".node")
     .data(data.nodes);
@@ -87,15 +98,11 @@ function render(data, target, forceGraph) {
       })
       .call(force.drag)
       .on('click', function (d) {
-          if (d === selectedGraphNode) {
-            selectedGraphNode = null;
-            link.classed('hover', false);
+          var currentSelected = selectedNode();
+          if (currentSelected && d.guid === currentSelected.guid) {
+            selectedNode(null);
           } else {
-            selectedGraphNode = d;
-            link.classed('hover', function (l) {
-               return l.source.id === d.id
-                   || l.target.id === d.id;
-            });
+            selectedNode(d);
           }
       })
       .on('mouseout', function () {
