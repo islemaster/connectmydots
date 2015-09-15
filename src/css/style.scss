@@ -216,9 +216,31 @@ pre {
   stroke-opacity: 0.1;
   stroke-width: 1;
 
-  &.hover {
+  &.to-selected-node {
     stroke: $whitesmoke;
     stroke-opacity: 0.9;
     stroke-width: 1.5;
+  }
+}
+
+#node-detail {
+  .without-selected {
+    margin: 1em;
+    text-align: center;
+    font-style: italic;
+  }
+
+  .with-selected {
+    margin: 1em;
+
+    label {
+      display: block;
+      margin-top: 0.5em;
+    }
+
+    input, textarea {
+      color: black;
+      width: 100%;
+    }
   }
 }

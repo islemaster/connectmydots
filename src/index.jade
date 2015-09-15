@@ -6,19 +6,26 @@ html
     link(rel='stylesheet', href='lib/jquery-ui-1.11.4.custom/jquery-ui.css', type='text/css')
     link(rel='stylesheet', href='css/layout.css', type='text/css')
     link(rel='stylesheet', href='css/style.css', type='text/css')
+    
+    //- Include libraries
     script(src='lib/ace.js')
     script(src='lib/d3.v3.min.js')
     script(src='lib/jquery-2.1.3.min.js')
     script(src='lib/jquery-ui-1.11.4.custom/jquery-ui.min.js')
+    
+    //- Include own source files
     script.
       // HACK - provide a dumb exports object for global use
       var exports = {};
-    script(src='js/utils.js', charset='utf-8')
+    script(src='js/utils.js')
+    script(src='js/NetworkGraph.js')
     script(src='js/NodeList.js')
-    script(src='js/Edge.js', charset='utf-8')
+    script(src='js/NodeDetail.js')
+    script(src='js/Edge.js')
     script(src='js/liveEdit.js')
-    script(src='js/connectMyDots.js', charset='utf-8')
+    script(src='js/connectMyDots.js')
     
+    //- Google Analytics tracking code
     | <script>
     |   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     |   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -36,6 +43,8 @@ html
       .body-row
         .left-column
           include ./jade/nodeList.jade
+          
+          include ./jade/nodeDetail.jade
           
           h1(data-for='edit-json', style='display:none') Edit JSON
           #edit-json.collapsable.flex-column(style='display:none')
@@ -60,7 +69,7 @@ html
       
       #about
         p.
-          <strong>Connect My Dots</strong> (v0.2.0) is free software by 
+          <strong>Connect My Dots</strong> (v0.3.0) is free software by 
           <a href="http://allesonbuchanan.com/">Alleson Buchanan</a>,
           designed to help artists visualize their professional network.
         p.

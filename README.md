@@ -1,7 +1,7 @@
 # Connect My Dots
 Network visualization for arts entrepreneurs
 
-**Current version: 0.2.0**
+**Current version: 0.3.0**
 
 Pre-release version is live at [connectmydots.net/preview](http://connectmydots.net/preview).
 
