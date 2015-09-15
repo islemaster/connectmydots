@@ -29,12 +29,23 @@ export function NetworkGraph() {
       name: nodeName,
       type: 'person',
       date: '1987-08-18',
-      guid: guid()
+      guid: guid(),
+      notes: ''
     };
     nodes.push(newNode);
     nodes.sort((a, b) => a.name < b.name ? -1 : 1);
     onChange();
     return newNode;
+  };
+
+  var editNode = function (updatedNode) {
+    var i = nodes.findIndex(x => x.guid === updatedNode.guid);
+    if (i < 0) {
+      throw new Error("Node not found: #{updatedNode}");
+    }
+
+    nodes[i] = updatedNode;
+    onChange();
   };
 
   var removeNode = function (node) {
@@ -74,6 +85,7 @@ export function NetworkGraph() {
   return {
     getNodes: () => nodes,
     addNode: addNode,
+    editNode: editNode,
     removeNode: removeNode,
     getEdges: () => edges,
     addEdge: addEdge,

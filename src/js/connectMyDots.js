@@ -1,5 +1,5 @@
 var networkGraph;
-var nodeListController;
+var nodeListController, nodeDetailController;
 
 var selectedNode_ = null;
 
@@ -28,6 +28,7 @@ function selectedNode(node) {
     graphView.links().classed('to-selected-node', false);
   }
   nodeListController.render();
+  nodeDetailController.render();
   return selectedNode_;
 }
 
@@ -120,6 +121,10 @@ $(function () {
     selectedNode: selectedNode
   });
   nodeListController.render();
+  nodeDetailController = NodeDetail($('#node-detail'), networkGraph, {
+    selectedNode: selectedNode
+  });
+  nodeDetailController.render();
   loadData();
   updateGraphVisualization();
 });

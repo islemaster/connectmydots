@@ -20,6 +20,7 @@ html
     script(src='js/utils.js')
     script(src='js/NetworkGraph.js')
     script(src='js/NodeList.js')
+    script(src='js/NodeDetail.js')
     script(src='js/Edge.js')
     script(src='js/liveEdit.js')
     script(src='js/connectMyDots.js')
@@ -42,6 +43,8 @@ html
       .body-row
         .left-column
           include ./jade/nodeList.jade
+          
+          include ./jade/nodeDetail.jade
           
           h1(data-for='edit-json', style='display:none') Edit JSON
           #edit-json.collapsable.flex-column(style='display:none')

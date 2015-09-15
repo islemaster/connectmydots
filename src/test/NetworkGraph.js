@@ -19,7 +19,8 @@ describe('NetworkGraph', function () {
           "name":"Brad",
           "type":"person",
           "date":"1987-08-18",
-          "guid":"4bbb85df-4f6d-bbf6-fee7-48cff33295a0"
+          "guid":"4bbb85df-4f6d-bbf6-fee7-48cff33295a0",
+          "notes":""
         }
       ],
       graph.getNodes()

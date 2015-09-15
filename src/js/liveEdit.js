@@ -81,8 +81,14 @@ function render(data, target, forceGraph) {
   var link = svg.selectAll(".link")
     .data(data.links)
     .enter().append("line")
-    .attr("class", "link");
+    .attr("class", "link")
   linkSelector = link;
+  link.classed('to-selected-node', (l) => {
+        var selected = selectedNode();
+        if (!selected) { return false; }
+        return l.source.guid === selected.guid ||
+               l.target.guid === selected.guid;
+      });
 
   var nodes = svg.selectAll(".node")
     .data(data.nodes);

@@ -91,7 +91,8 @@ export function NodeList(rootDiv, networkGraph, callbacks) {
 
   // Capture backspace/delete for removing nodes
   $('html').keydown(e => {
-    if (!$(e.target).is('input')) {
+    var target = $(e.target);
+    if (!(target.is('input') || target.is('textarea'))) {
       if (e.which === 8 || e.which === 46) { // backspace or delete
         e.preventDefault();
         if (selectedNode()) {
