@@ -13,9 +13,7 @@
   "dependencies": {
     "express": "^4.15.2",
     "gulp": "^3.9.0",
-    "normalize.css": "^3.0.3"
-  },
-  "devDependencies": {
+    "normalize.css": "^3.0.3",
     "del": "^1.2.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.1.0",
