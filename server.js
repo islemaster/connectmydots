@@ -1,4 +1,5 @@
 const express = require('express');
+const pg = require('pg');
 
 // This is the server for
 const APP_NAME = 'Connect My Dots';
@@ -22,6 +23,22 @@ app.use(express.static(`${__dirname}/build`));
 app.get('/', (request, response) => {
   response.sendfile('index.html');
   response.type('text/html');
+});
+
+// Test route for database connection
+app.get('/db', (request, response) => {
+  pg.connect(process.env.DATABASE_URL, (err, client, done) => {
+    client.query('select * from account', (err, result) => {
+      done();
+      if (err) {
+        console.error(err);
+        response.send("Error " + err);
+      } else {
+        response.send(JSON.stringify({results: result.rows}));
+        response.end();
+      }
+    });
+  });
 });
 
 // And finally we start listening on the port!
