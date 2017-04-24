@@ -1,9 +1,17 @@
 {
   "name": "connectmydots",
-  "version": "0.3.0",
-  "description": "Professional Network Visualization",
-  "main": "package.js",
+  "version": "0.4.0",
+  "description": "Network visualization for arts entrepreneurs",
+  "license": "GNU GPL 2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/islemaster/connectmydots"
+  },
+  "engines": {
+    "node": "6.x"
+  },
   "dependencies": {
+    "express": "^4.15.2",
     "gulp": "^3.9.0",
     "normalize.css": "^3.0.3"
   },
@@ -18,8 +26,8 @@
     "seedrandom": "^2.4.0"
   },
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node server.js"
   },
-  "author": "Brad Buchanan",
-  "license": "GNU GPL 2"
+  "author": "Brad Buchanan"
 }

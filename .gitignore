@@ -1,3 +1,17 @@
+
+# Editor local artifacts
 **/*.swp
-build
+.idea
+
+# Node artifacts
 node_modules
+
+# Build output
+build
+
+# Heroku
+*.env
+*.dev
+Dockerfile
+docker-compose.yml
+
