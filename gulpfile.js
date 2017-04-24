@@ -60,6 +60,8 @@ gulp.task('test', ['babel', 'babel-test'], function () {
       .pipe(mocha({reporter: 'spec'}));
 });
 
+gulp.task('build-prod', ['copy-lib', 'copy-assets', 'babel', 'jade', 'sass']);
+
 gulp.task('default', ['copy-lib', 'copy-assets', 'babel', 'jade', 'sass'], function () {
   gulp.watch('./src/**/*.js', ['babel', 'test']);
   gulp.watch('./src/**/*.scss', ['sass']);

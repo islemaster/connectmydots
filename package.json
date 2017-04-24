@@ -27,6 +27,8 @@
   },
   "scripts": {
     "test": "test",
+    "postinstall": "npm run build",
+    "build": "gulp build-prod",
     "start": "node server.js"
   },
   "author": "Brad Buchanan"
