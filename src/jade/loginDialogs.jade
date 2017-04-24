@@ -1,0 +1,47 @@
+#sign-in
+  form(onsubmit="onSubmitSignIn(); return false;")
+    table
+      tbody
+        tr
+          th User Id
+          td
+            input(name="user-id")
+        tr
+          th Password
+          td
+            input(name="password" type="password")
+        tr
+          th
+          td
+            input(type="submit" value="Sign In")
+        tr
+          th
+          td(colspan=2) Don't have an account? <a href="#" class="sign-up-link">Click here to sign up.</a>
+
+#sign-up
+  form(onsubmit="onSubmitSignUp(); return false;")
+    table
+      tbody
+        tr
+          th User Id
+          td
+            input(name="user-id")
+          td.user-id.feedback
+        tr
+          th Password
+          td
+            input(name="password" type="password")
+          td.password.feedback
+        tr
+          th Confirm Password
+          td
+            input#confirm-password(name="confirm-password" type="password")
+          td.confirm-password.feedback
+        tr
+          th
+          td
+            input(type="submit" value="Sign Up")
+          td.general.feedback
+        tr
+          th
+          td(colspan=2) Already have an account? <a href="#" class="sign-in-link">Click here to sign in.</a>

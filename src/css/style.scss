@@ -244,3 +244,17 @@ pre {
     }
   }
 }
+
+#sign-in, #sign-up {
+  th, td {
+    padding: 0.5em;
+  }
+
+  th {
+    text-align: right;
+  }
+
+  .feedback {
+    color: $my-tomato;
+  }
+}

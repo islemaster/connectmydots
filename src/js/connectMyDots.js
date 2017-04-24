@@ -74,17 +74,89 @@ var loadData = function () {
   networkGraph.setContent(nodes, edges);
 };
 
+let $signInDialog, $signUpDialog;
+
+function prepareLoginDialogs() {
+  $signInDialog = $('#sign-in');
+  $signInDialog.dialog({
+    autoOpen: false,
+    title: "Sign In",
+    width: 700,
+    modal: true,
+    resizable: false,
+  });
+
+  $('.header-row .sign-in').click(() => {
+      $signInDialog.dialog('open');
+  });
+
+  $signUpDialog = $('#sign-up');
+  $signUpDialog.dialog({
+    autoOpen: false,
+    title: "Sign Up",
+    width: 700,
+    modal: true,
+    resizable: false,
+  });
+
+  $signUpDialog.find('.sign-in-link').click(event => {
+    $signUpDialog.dialog('close');
+    $signInDialog.dialog('open');
+    event.preventDefault();
+  });
+
+  $signInDialog.find('.sign-up-link').click(event => {
+    $signInDialog.dialog('close');
+    $signUpDialog.dialog('open');
+    event.preventDefault();
+  });
+}
+
+function onSubmitSignIn() {
+  $.post('/sign-in', $signInDialog.find('form').serialize())
+    .done(data => {
+      alert(data);
+    })
+    .fail((jqxhr, textStatus, errorThrown) => {
+      alert('Fail! ' + textStatus + ' ' + errorThrown);
+    });
+}
+
+function onSubmitSignUp() {
+  $signUpDialog.find('.feedback').text('');
+  $.post('/sign-up', $signUpDialog.find('form').serialize())
+    .done(data => {
+      $signUpDialog.dialog('close');
+      // TODO: Finish sign-in?
+      alert(data);
+    })
+    .fail((jqxhr, textStatus, errorThrown) => {
+      if (jqxhr.responseJSON) {
+        const error = jqxhr.responseJSON.error;
+        const field = jqxhr.responseJSON.field;
+        $signUpDialog.find(`.${field}.feedback`).text(error);
+      } else {
+        $signUpDialog.find('.general.feedback').text('An unknown error occurred');
+      }
+    });
+}
+
+
 // Onload
 $(function () {
   $('#about').dialog({
     autoOpen: false,
     title: "About Connect My Dots",
-    width: 600
+    width: 600,
+    modal: true,
+    resizable: false,
   });
 
   $('.header-row .about').click(() => {
     $('#about').dialog('open');
   });
+
+  prepareLoginDialogs();
 
   $('.header-row .loadDemoContent').click(() => {
     if (!confirm("Are you sure?  This will overwrite your saved graph!")) {

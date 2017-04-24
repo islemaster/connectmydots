@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
 const express = require('express');
 const pg = require('pg');
 
@@ -8,6 +10,10 @@ const APP_NAME = 'Connect My Dots';
 // to get up and running on Heroku.
 const app = express();
 app.set('port', process.env.PORT || 5000);
+
+// Configure our server to read JSON and urlencoded requests
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 // It doesn't do much yet - just serves our static-built app
 // from the build directory.  
@@ -37,6 +43,89 @@ app.get('/db', (request, response) => {
         response.send(JSON.stringify({results: result.rows}));
         response.end();
       }
+    });
+  });
+});
+
+app.post('/sign-in', (request, response) => {
+  response.sendStatus(501); // Not implemented
+});
+
+app.post('/sign-up', (request, response) => {
+  if (!request.body) {
+    // Totally malformed
+    response.sendStatus(400);
+    return;
+  }
+
+  const id = (request.body['user-id'] || '').toLowerCase();
+  const password = request.body['password'];
+  const confirmPassword = request.body['confirm-password'];
+
+  // Username too short
+  if (id.length <= 0) {
+    response.status(400).json({
+      field: 'user-id',
+      error: 'User id is too short.'
+    });
+    return;
+  }
+
+  // Password too short
+  if (!password || password.length <= 0) {
+    response.status(400).json({
+      field: 'password',
+      error: 'Password is too short.'
+    });
+    return;
+  }
+
+  // Passwords don't match
+  if (!confirmPassword || password != confirmPassword) {
+    response.status(400).json({
+      field: 'confirm-password',
+      error: 'Passwords do not match.'
+    });
+    return;
+  }
+
+  pg.connect(process.env.DATABASE_URL, (err, client, done) => {
+    client.query('select id from account where id = $1', [id], (err, result) => {
+
+      // User id is taken
+      if (result.rows.length > 0) {
+        done();
+        response.status(400).json({
+          field: 'user-id',
+          error: `The user id ${id} is already taken.`
+        });
+        return;
+      }
+
+      // Everything looks good, let's insert the new user into the database
+      bcrypt.hash(password, 10, (err, hash) => {
+        if (err) {
+          console.error(err);
+          response.status(500).send('Error ' + err);
+          return;
+        }
+
+        client.query(
+          'insert into account (id, password) values ($1, $2)',
+          [id, hash],
+          err => {
+            done();
+            if (err) {
+              console.error(err);
+              response.status(500).send("Error " + err);
+              return;
+            }
+
+            response.json({
+              result: `User ${id} created.`
+            });
+          });
+      });
     });
   });
 });
