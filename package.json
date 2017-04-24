@@ -24,7 +24,7 @@
   },
   "scripts": {
     "test": "test",
-    "postinstall": "yarn run build",
+    "postinstall": "npm rebuild node-sass && yarn run build",
     "build": "gulp build-prod",
     "start": "node server.js"
   },
