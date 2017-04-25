@@ -51,6 +51,7 @@ kbd // Credit: http://meta.superuser.com/questions/4788/css-for-the-new-kbd-styl
   background-color: $header_gray;
 
   h1 {
+    display: inline-block;
     font-family: sans-serif;
     font-size: 14pt;
     line-height: 16pt;
@@ -253,10 +254,11 @@ pre {
     display: none;
 
     position: absolute;
-    right: 0;
+    left: 0;
+    right: auto;
     top: 100%;
     background-color: $header_gray;
-    min-width: 160px;
+    min-width: 100%;
     -webkit-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
@@ -265,11 +267,21 @@ pre {
       color: $whitesmoke;
       padding: 12px 16px;
       text-decoration: none;
-      text-align: right;
+      text-align: left;
       display: block;
       &:hover {
         color: $header_gray;
         background-color: whitesmoke;
+      }
+    }
+  }
+
+  &.right {
+    .dropdown-content {
+      right: 0;
+      left: auto;
+      a {
+        text-align: right;
       }
     }
   }
