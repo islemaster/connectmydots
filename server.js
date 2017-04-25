@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const express = require('express');
 const pg = require('pg');
