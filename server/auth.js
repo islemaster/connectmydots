@@ -1,4 +1,4 @@
-// Connect My Dots /api routes
+// Connect My Dots /auth routes
 const bcrypt = require('bcryptjs');
 const pg = require('pg');
 

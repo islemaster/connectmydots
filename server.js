@@ -4,6 +4,7 @@ const express = require('express');
 const pg = require('pg');
 const pgStore = require('connect-pg-simple');
 const session = require('express-session');
+const createApiRoutes = require('./server/api');
 const createAuthRoutes = require('./server/auth');
 
 // Compose a postgres session store class
@@ -48,6 +49,8 @@ app.get('/', (request, response) => {
 
 // Add auth routes (sign in, sign out, etc)
 createAuthRoutes(app);
+// Add api routes (save map, load map, etc)
+createApiRoutes(app);
 
 // And finally we start listening on the port!
 app.listen(app.get('port'), () => {
