@@ -5,6 +5,13 @@ var selectedNode_ = null;
 
 var graphView = new GraphView();
 
+let currentUserId = null;
+let currentMapId = null;
+let lastRemoteSave = null;
+
+let $header;
+let $signInDialog, $signUpDialog;
+
 /**
  * Getter/setter for selected node
  * @param {Object|null} [node] - if provided, sets selected node.  If omitted,
@@ -58,6 +65,7 @@ function updateGraphVisualization() {
 var saveData = function () {
   localStorage.setItem('cmdots-nodes', JSON.stringify(networkGraph.getNodes()));
   localStorage.setItem('cmdots-edges', JSON.stringify(networkGraph.getEdges()));
+  saveToRemote();
 };
 
 var loadData = function () {
@@ -74,8 +82,56 @@ var loadData = function () {
   networkGraph.setContent(nodes, edges);
 };
 
-let $header;
-let $signInDialog, $signUpDialog;
+// Save once every ten seconds, at most
+const remoteSaveFrequency = 10000;
+let isSaveInProgress = false;
+const saveToRemote = $.throttle(remoteSaveFrequency, function () {
+  if (!currentUserId || isSaveInProgress) {
+    return;
+  }
+
+  const mapData = {
+    data: {
+      nodes: networkGraph.getNodes(),
+      edges: networkGraph.getEdges(),
+    }
+  };
+
+  if (currentMapId) {
+    // Update the map
+    isSaveInProgress = true;
+    $.post(`/api/map/${currentMapId}`, mapData)
+      .done(data => {
+        lastRemoteSave = Date.now();
+      })
+      .fail((jqxhr, textStatus, errorThrown) => {
+        console.warn(textStatus, errorThrown);
+      })
+      .always(() => isSaveInProgress = false);
+  } else {
+    // Create a new map
+    isSaveInProgress = true;
+    $.post('/api/map', mapData)
+      .done(data => {
+        currentMapId = data.map_id;
+        lastRemoteSave = Date.now();
+      })
+      .fail((jqxhr, textStatus, errorThrown) => {
+        console.warn(textStatus, errorThrown);
+      })
+      .always(() => isSaveInProgress = false);
+  }
+});
+
+function updateLastSavedText() {
+  const $lastSaved = $header.find('.last-saved');
+  if (lastRemoteSave) {
+    const duration = moment.duration(lastRemoteSave - Date.now());
+    $lastSaved.text(`Last saved ${duration.humanize(true)}`);
+  } else {
+    $lastSaved.text('');
+  }
+}
 
 function prepareLoginDialogs() {
   $signInDialog = $('#sign-in');
@@ -173,6 +229,7 @@ function loginFormErrorHandler($dialog) {
 }
 
 function setSignedIn(userId) {
+  currentUserId = userId;
   $header.find('.greeting').text(`Hi, ${userId}`);
   $header.find('.sign-in-link').hide();
   $header.find('.sign-up-link').hide();
@@ -180,6 +237,11 @@ function setSignedIn(userId) {
 }
 
 function setSignedOut({toast=true} = {}) {
+  currentUserId = null;
+  $header.find('.greeting').text('Sign in / Sign up');
+  $header.find('.sign-in-link').show();
+  $header.find('.sign-up-link').show();
+  $header.find('.sign-out-link').hide();
   if (toast) {
     $.toast({
       text: 'Signed out.',
@@ -187,10 +249,6 @@ function setSignedOut({toast=true} = {}) {
       icon: 'info'
     });
   }
-  $header.find('.greeting').text('Sign in / Sign up');
-  $header.find('.sign-in-link').show();
-  $header.find('.sign-up-link').show();
-  $header.find('.sign-out-link').hide();
 }
 
 // Onload
@@ -219,8 +277,8 @@ $(function () {
     }
   });
 
-  $header.find('.loadDemoContent').click(() => {
-    if (!confirm("Are you sure?  This will overwrite your saved graph!")) {
+  $header.find('.demo-link').click(() => {
+    if (!confirm("Are you sure?  This will overwrite your saved map, and cannot be undone!")) {
       return;
     }
     $.ajax({
@@ -238,8 +296,8 @@ $(function () {
     });
   });
 
-  $header.find('.clearContent').click(() => {
-    if (confirm("Are you sure?  This will overwrite your saved graph!")) {
+  $header.find('.clear-link').click(() => {
+    if (confirm("Are you sure?  This will delete your saved graph, and cannot be undone!")) {
       networkGraph.clearContent();
     }
   });
@@ -260,4 +318,6 @@ $(function () {
   nodeDetailController.render();
   loadData();
   updateGraphVisualization();
+
+  setInterval(updateLastSavedText, 5000);
 });

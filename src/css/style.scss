@@ -259,6 +259,7 @@ pre {
     top: 100%;
     background-color: $header_gray;
     min-width: 100%;
+    white-space: nowrap;
     -webkit-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
