@@ -5,7 +5,8 @@ const pg = require('pg');
 module.exports = function createApiRoutes(app) {
   // Debug routes
   if (process.env.NODE_ENV !== 'production') {
-    app.get('/maps', (request, response) => {
+    // List all maps in the database
+    app.get('/api/maps', (request, response) => {
       pg.connect(process.env.DATABASE_URL, (err, client, done) => {
         client.query('select * from map', (err, result) => {
           done();

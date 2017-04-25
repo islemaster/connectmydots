@@ -126,15 +126,15 @@ function prepareLoginDialogs() {
 }
 
 function onSubmitSignIn() {
-  onSubmitLoginForm($signInDialog, '/sign-in');
+  onSubmitLoginForm($signInDialog, '/auth/sign-in');
 }
 
 function onSubmitSignUp() {
-  onSubmitLoginForm($signUpDialog, '/sign-up');
+  onSubmitLoginForm($signUpDialog, '/auth/sign-up');
 }
 
 function signOut() {
-  $.post('/sign-out')
+  $.post('/auth/sign-out')
     .done(() => setSignedOut())
     .fail(() => console.error('There was a problem signing out.'));
 }
@@ -213,7 +213,7 @@ $(function () {
 
   // Check login state on load
   setSignedOut({toast: false});
-  $.get('/sign-in').done(data => {
+  $.get('/auth/sign-in').done(data => {
     if (data.current_user) {
       setSignedIn(data.current_user);
     }

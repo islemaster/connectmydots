@@ -3,9 +3,9 @@ const bcrypt = require('bcryptjs');
 const pg = require('pg');
 
 module.exports = function createAuthRoutes(app) {
-  // GET /sign-in
-// Retrieve the user's current sign-in state.
-  app.get('/sign-in', (request, response) => {
+  // GET /auth/sign-in
+  // Retrieve the user's current sign-in state.
+  app.get('/auth/sign-in', (request, response) => {
     response.json({
       current_user: request.session.current_user,
       result: request.session.current_user
@@ -14,7 +14,10 @@ module.exports = function createAuthRoutes(app) {
     });
   });
 
-  app.post('/sign-in', (request, response) => {
+  // POST /auth/sign-in
+  // Attempt to sign the user in
+  // Expects user-id and password
+  app.post('/auth/sign-in', (request, response) => {
     // Already signed in?  Succeed immediately.
     if (request.session.current_user) {
       response.json({
@@ -73,6 +76,8 @@ module.exports = function createAuthRoutes(app) {
     });
   });
 
+  // GET/POST /auth/sign-out
+  // End the user's session
   function signOutHandler(request, response) {
     delete request.session.current_user;
     response.json({
@@ -80,10 +85,13 @@ module.exports = function createAuthRoutes(app) {
       result: 'Signed out.'
     });
   }
-  app.post('/sign-out', signOutHandler);
-  app.get('/sign-out', signOutHandler);
+  app.post('/auth/sign-out', signOutHandler);
+  app.get('/auth/sign-out', signOutHandler);
 
-  app.post('/sign-up', (request, response) => {
+  // POST /auth/sign-up
+  // Create a new user
+  // Expects user-id, password, and confirm-password
+  app.post('/auth/sign-up', (request, response) => {
     if (!request.body) {
       // Totally malformed
       response.sendStatus(400);
@@ -166,7 +174,9 @@ module.exports = function createAuthRoutes(app) {
 
   // Debug routes
   if (process.env.NODE_ENV !== 'production') {
-    app.get('/users', (request, response) => {
+    // GET /auth/users
+    // List all Users in the database
+    app.get('/auth/users', (request, response) => {
       pg.connect(process.env.DATABASE_URL, (err, client, done) => {
         client.query('select id from account', (err, result) => {
           done();
