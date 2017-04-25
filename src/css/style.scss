@@ -72,7 +72,7 @@ kbd // Credit: http://meta.superuser.com/questions/4788/css-for-the-new-kbd-styl
   .button {
     padding: 8px;
     cursor: pointer;
-    text-decoration: underline;
+    text-decoration: none;
 
     &:hover {
       color: $my-yellow;
@@ -245,6 +245,42 @@ pre {
   }
 }
 
+// Dropdown menus in header
+.dropdown-root {
+  position: relative;
+
+  .dropdown-content {
+    display: none;
+
+    position: absolute;
+    right: 0;
+    background-color: $header_gray;
+    min-width: 160px;
+    -webkit-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+
+    a {
+      color: $whitesmoke;
+      padding: 12px 16px;
+      text-decoration: none;
+      text-align: right;
+      display: block;
+      &:hover {
+        color: $header_gray;
+        background-color: whitesmoke;
+      }
+    }
+  }
+
+  &:hover {
+    .dropdown-content {
+      display: block;
+    }
+  }
+}
+
+// Dialogs
 #sign-in, #sign-up {
   th, td {
     padding: 0.5em;
@@ -256,5 +292,9 @@ pre {
 
   .feedback {
     color: $my-tomato;
+  }
+
+  .general.feedback {
+    padding-left: 0.5em;
   }
 }

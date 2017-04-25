@@ -74,6 +74,7 @@ var loadData = function () {
   networkGraph.setContent(nodes, edges);
 };
 
+let $header;
 let $signInDialog, $signUpDialog;
 
 function prepareLoginDialogs() {
@@ -84,10 +85,6 @@ function prepareLoginDialogs() {
     width: 700,
     modal: true,
     resizable: false,
-  });
-
-  $('.header-row .sign-in').click(() => {
-      $signInDialog.dialog('open');
   });
 
   $signUpDialog = $('#sign-up');
@@ -110,40 +107,83 @@ function prepareLoginDialogs() {
     $signUpDialog.dialog('open');
     event.preventDefault();
   });
+
+  // Attach handlers related to auth
+  $header.find('.sign-in-link').click(event => {
+    $signInDialog.dialog('open');
+    event.preventDefault();
+  });
+
+  $header.find('.sign-up-link').click(event => {
+    $signUpDialog.dialog('open');
+    event.preventDefault();
+  });
+
+  $header.find('.sign-out-link').click(event => {
+    signOut();
+    event.preventDefault();
+  });
 }
 
 function onSubmitSignIn() {
-  $.post('/sign-in', $signInDialog.find('form').serialize())
-    .done(data => {
-      alert(data);
-    })
-    .fail((jqxhr, textStatus, errorThrown) => {
-      alert('Fail! ' + textStatus + ' ' + errorThrown);
-    });
+  onSubmitLoginForm($signInDialog, '/sign-in');
 }
 
 function onSubmitSignUp() {
-  $signUpDialog.find('.feedback').text('');
-  $.post('/sign-up', $signUpDialog.find('form').serialize())
-    .done(data => {
-      $signUpDialog.dialog('close');
-      // TODO: Finish sign-in?
-      alert(data);
-    })
-    .fail((jqxhr, textStatus, errorThrown) => {
-      if (jqxhr.responseJSON) {
-        const error = jqxhr.responseJSON.error;
-        const field = jqxhr.responseJSON.field;
-        $signUpDialog.find(`.${field}.feedback`).text(error);
-      } else {
-        $signUpDialog.find('.general.feedback').text('An unknown error occurred');
-      }
-    });
+  onSubmitLoginForm($signUpDialog, '/sign-up');
 }
 
+function signOut() {
+  $.post('/sign-out')
+    .done(() => setSignedOut())
+    .fail(() => console.error('There was a problem signing out.'));
+}
+
+function onSubmitLoginForm($dialog, url) {
+  $dialog.find('.feedback').text('');
+  $.post(url, $dialog.find('form').serialize())
+    .done(loginFormSuccessHandler($dialog))
+    .fail(loginFormErrorHandler($dialog));
+}
+
+function loginFormSuccessHandler($dialog) {
+  return data => {
+    // TODO: Nice sign-in toast?
+    setSignedIn(data.current_user);
+    $dialog.dialog('close');
+  };
+}
+
+function loginFormErrorHandler($dialog) {
+  return jqxhr => {
+    if (jqxhr.responseJSON) {
+      const error = jqxhr.responseJSON.error;
+      const field = jqxhr.responseJSON.field;
+      $dialog.find(`.${field}.feedback`).text(error);
+    } else {
+      $dialog.find('.general.feedback').text('An unknown error occurred');
+    }
+  };
+}
+
+function setSignedIn(userId) {
+  $header.find('.greeting').text(`Hi, ${userId}`);
+  $header.find('.sign-in-link').hide();
+  $header.find('.sign-up-link').hide();
+  $header.find('.sign-out-link').show();
+}
+
+function setSignedOut() {
+  $header.find('.greeting').text('Sign in / Sign up');
+  $header.find('.sign-in-link').show();
+  $header.find('.sign-up-link').show();
+  $header.find('.sign-out-link').hide();
+}
 
 // Onload
 $(function () {
+  $header = $('.header-row');
+
   $('#about').dialog({
     autoOpen: false,
     title: "About Connect My Dots",
@@ -152,13 +192,21 @@ $(function () {
     resizable: false,
   });
 
-  $('.header-row .about').click(() => {
+  $header.find('.about').click(() => {
     $('#about').dialog('open');
   });
 
   prepareLoginDialogs();
 
-  $('.header-row .loadDemoContent').click(() => {
+  // Check login state on load
+  setSignedOut();
+  $.get('/sign-in').done(data => {
+    if (data.current_user) {
+      setSignedIn(data.current_user);
+    }
+  });
+
+  $header.find('.loadDemoContent').click(() => {
     if (!confirm("Are you sure?  This will overwrite your saved graph!")) {
       return;
     }
@@ -177,7 +225,7 @@ $(function () {
     });
   });
 
-  $('.header-row .clearContent').click(() => {
+  $header.find('.clearContent').click(() => {
     if (confirm("Are you sure?  This will overwrite your saved graph!")) {
       networkGraph.clearContent();
     }
