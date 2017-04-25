@@ -45,22 +45,6 @@ app.get('/', (request, response) => {
   response.type('text/html');
 });
 
-// Test route for database connection
-app.get('/db', (request, response) => {
-  pg.connect(process.env.DATABASE_URL, (err, client, done) => {
-    client.query('select * from account', (err, result) => {
-      done();
-      if (err) {
-        console.error(err);
-        response.send("Error " + err);
-      } else {
-        response.send(JSON.stringify({results: result.rows}));
-        response.end();
-      }
-    });
-  });
-});
-
 // GET /sign-in
 // Retrieve the user's current sign-in state.
 app.get('/sign-in', (request, response) => {
@@ -221,6 +205,24 @@ app.post('/sign-up', (request, response) => {
     });
   });
 });
+
+// Debug routes
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/users', (request, response) => {
+    pg.connect(process.env.DATABASE_URL, (err, client, done) => {
+      client.query('select id from account', (err, result) => {
+        done();
+        if (err) {
+          console.error(err);
+          response.send("Error " + err);
+        } else {
+          response.send(JSON.stringify({users: result.rows}));
+          response.end();
+        }
+      });
+    });
+  });
+}
 
 // And finally we start listening on the port!
 app.listen(app.get('port'), () => {
