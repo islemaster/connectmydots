@@ -2,7 +2,11 @@ const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const express = require('express');
 const pg = require('pg');
+const pgStore = require('connect-pg-simple');
 const session = require('express-session');
+
+// Compose a postgres session store class
+const PgSessionStore = pgStore(session);
 
 // This is the server for
 const APP_NAME = 'Connect My Dots';
@@ -18,6 +22,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // Enable sessions (so users can log in)
 app.use(session({
+  store: new PgSessionStore({ pg }),
   name: 'cmd-session',
   secret: process.env.SESSION_SECRET,
   resave: false,
