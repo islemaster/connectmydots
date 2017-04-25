@@ -4,6 +4,39 @@ const pg = require('pg');
 
 module.exports = function createApiRoutes(app) {
 
+  // GET /api/map/latest
+  // Retrieve the current user's most recently edited map
+  app.get('/api/map/latest', (request, response) => {
+    const owner = request.session.current_user;
+
+    if (!owner) {
+      response.sendStatus(403);
+      return;
+    }
+
+    pg.connect(process.env.DATABASE_URL, (err, client, done) => {
+      client.query(
+        'select id, data, name from map where owner = $1 order by last_update desc limit 1',
+        [owner],
+        (err, result) => {
+          done();
+          if (err) {
+            console.error(err);
+            response.status(500).send('Error: ' + err);
+          } else if (result.rowCount < 1) {
+            response.sendStatus(404);
+          } else {
+            response.json({
+              map_id: result.rows[0].id,
+              name: result.rows[0].name,
+              data: result.rows[0].data,
+            });
+          }
+        }
+      )
+    });
+  });
+
   // GET /api/map/<uuid>
   // Retrieve a map object
   // Only available to the map owner, all others receive a 404.
@@ -22,6 +55,7 @@ module.exports = function createApiRoutes(app) {
         'select id, data, name from map where id = $1 and owner = $2 limit 1',
         [id, owner],
         (err, result) => {
+          done();
           if (err) {
             console.error(err);
             response.status(500).send('Error: ' + err);
