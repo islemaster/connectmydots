@@ -62,13 +62,25 @@ function updateGraphVisualization() {
   rebuildGraph();
 }
 
-var saveData = function () {
+function saveData() {
+  saveDataToLocalStorage();
+  saveToRemote();
+}
+
+function loadData() {
+  if (currentUserId) {
+    loadFromRemote();
+  } else {
+    loadDataFromLocalStorage();
+  }
+}
+
+function saveDataToLocalStorage() {
   localStorage.setItem('cmdots-nodes', JSON.stringify(networkGraph.getNodes()));
   localStorage.setItem('cmdots-edges', JSON.stringify(networkGraph.getEdges()));
-  saveToRemote();
-};
+}
 
-var loadData = function () {
+function loadDataFromLocalStorage() {
   var nodes, edges;
   try {
     var storedNodes = localStorage.getItem('cmdots-nodes');
@@ -80,7 +92,8 @@ var loadData = function () {
     edges = [];
   }
   networkGraph.setContent(nodes, edges);
-};
+  updateGraphVisualization();
+}
 
 // Save once every ten seconds, at most
 const remoteSaveFrequency = 10000;
@@ -122,6 +135,20 @@ const saveToRemote = $.throttle(remoteSaveFrequency, function () {
       .always(() => isSaveInProgress = false);
   }
 });
+
+function loadFromRemote() {
+  $.get('/api/map/latest')
+    .done(data => {
+      currentMapId = data.map_id;
+      const nodes = data.data.nodes || [];
+      const edges = data.data.edges || [];
+      networkGraph.setContent(nodes, edges);
+      updateGraphVisualization();
+    })
+    .fail((jqxhr, textStatus, errorThrown) => {
+      console.warn(textStatus, errorThrown);
+    });
+}
 
 function updateLastSavedText() {
   const $lastSaved = $header.find('.last-saved');
@@ -182,11 +209,19 @@ function prepareLoginDialogs() {
 }
 
 function onSubmitSignIn() {
-  onSubmitLoginForm($signInDialog, '/auth/sign-in');
+  onSubmitLoginForm($signInDialog, '/auth/sign-in', err => {
+    if (!err) {
+      loadFromRemote();
+    }
+  });
 }
 
 function onSubmitSignUp() {
-  onSubmitLoginForm($signUpDialog, '/auth/sign-up');
+  onSubmitLoginForm($signUpDialog, '/auth/sign-up', err => {
+    if (!err) {
+      saveData();
+    }
+  });
 }
 
 function signOut() {
@@ -195,14 +230,14 @@ function signOut() {
     .fail(() => console.error('There was a problem signing out.'));
 }
 
-function onSubmitLoginForm($dialog, url) {
+function onSubmitLoginForm($dialog, url, callback) {
   $dialog.find('.feedback').text('');
   $.post(url, $dialog.find('form').serialize())
-    .done(loginFormSuccessHandler($dialog))
-    .fail(loginFormErrorHandler($dialog));
+    .done(loginFormSuccessHandler($dialog, callback))
+    .fail(loginFormErrorHandler($dialog, callback));
 }
 
-function loginFormSuccessHandler($dialog) {
+function loginFormSuccessHandler($dialog, callback) {
   return data => {
     $.toast({
       text: `Signed in as ${data.current_user}.`,
@@ -213,17 +248,20 @@ function loginFormSuccessHandler($dialog) {
     $dialog.find('form')[0].reset();
     setSignedIn(data.current_user);
     $dialog.dialog('close');
+    callback();
   };
 }
 
-function loginFormErrorHandler($dialog) {
+function loginFormErrorHandler($dialog, callback) {
   return jqxhr => {
     if (jqxhr.responseJSON) {
       const error = jqxhr.responseJSON.error;
       const field = jqxhr.responseJSON.field;
       $dialog.find(`.${field}.feedback`).text(error);
+      callback(new Error(error));
     } else {
       $dialog.find('.general.feedback').text('An unknown error occurred');
+      callback(new Error('An unknown error occurred'));
     }
   };
 }
@@ -238,6 +276,7 @@ function setSignedIn(userId) {
 
 function setSignedOut({toast=true} = {}) {
   currentUserId = null;
+  currentMapId = null;
   $header.find('.greeting').text('Sign in / Sign up');
   $header.find('.sign-in-link').show();
   $header.find('.sign-up-link').show();
@@ -275,6 +314,7 @@ $(function () {
     if (data.current_user) {
       setSignedIn(data.current_user);
     }
+    loadData();
   });
 
   $header.find('.demo-link').click(() => {
@@ -316,8 +356,6 @@ $(function () {
     selectedNode: selectedNode
   });
   nodeDetailController.render();
-  loadData();
-  updateGraphVisualization();
 
   setInterval(updateLastSavedText, 5000);
 });
