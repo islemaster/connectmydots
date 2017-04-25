@@ -148,7 +148,13 @@ function onSubmitLoginForm($dialog, url) {
 
 function loginFormSuccessHandler($dialog) {
   return data => {
-    // TODO: Nice sign-in toast?
+    $.toast({
+      text: `Signed in as ${data.current_user}.`,
+      showHideTransition: 'fade',
+      position: 'top-center',
+      icon: 'success'
+    });
+    $dialog.find('form')[0].reset();
     setSignedIn(data.current_user);
     $dialog.dialog('close');
   };
@@ -173,7 +179,14 @@ function setSignedIn(userId) {
   $header.find('.sign-out-link').show();
 }
 
-function setSignedOut() {
+function setSignedOut({toast=true} = {}) {
+  if (toast) {
+    $.toast({
+      text: 'Signed out.',
+      position: 'top-center',
+      icon: 'info'
+    });
+  }
   $header.find('.greeting').text('Sign in / Sign up');
   $header.find('.sign-in-link').show();
   $header.find('.sign-up-link').show();
@@ -199,7 +212,7 @@ $(function () {
   prepareLoginDialogs();
 
   // Check login state on load
-  setSignedOut();
+  setSignedOut({toast: false});
   $.get('/sign-in').done(data => {
     if (data.current_user) {
       setSignedIn(data.current_user);
