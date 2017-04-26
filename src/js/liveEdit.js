@@ -191,17 +191,6 @@ function rebuildGraph() {
 }
 
 $(function () {
-  // Set up left-column collapsers
-  $('.left-column h1').click(function (event) {
-    var targetId = $(event.target).attr('data-for');
-    $('.left-column .collapsable:not(#' + targetId + ')').slideUp('fast');
-    $('.left-column #' + targetId).slideDown('fast', function () {
-      dataEditor.resize();
-    });
-  });
-
-  $('#ace-data-editor').keyup(rebuildGraph);
-
   dataEditor = ace.edit('ace-data-editor');
   dataEditor.setTheme('ace/theme/monokai');
   dataEditor.getSession().setMode('ace/mode/json');

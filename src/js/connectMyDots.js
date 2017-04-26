@@ -348,6 +348,16 @@ $(function () {
     saveData();
   });
 
+  // Set up left-column collapsers
+  $('.left-column h1[data-for="node-detail"]').click(function (event) {
+    const $nodeDetail = $('#node-detail');
+    if ($nodeDetail.is(':visible')) {
+      $nodeDetail.animate({flexBasis: '0%'}, 'fast', 'linear', () => $nodeDetail.hide());
+    } else {
+      $nodeDetail.show().animate({flexBasis: '50%'}, 'fast', 'linear');
+    }
+  });
+
   nodeListController = NodeList($('#node-list'), networkGraph, {
     selectedNode: selectedNode
   });
