@@ -28,7 +28,7 @@
     "seedrandom": "^2.4.0"
   },
   "scripts": {
-    "test": "test",
+    "test": "gulp test",
     "postinstall": "npm rebuild node-sass && yarn run build",
     "build": "gulp build-prod",
     "start": "node server.js"
