@@ -72,3 +72,10 @@ html, body {
     flex: 0 0 auto;
   }
 }
+
+.button-row {
+  margin: 6px 0;
+  button {
+    float: right;
+  }
+}

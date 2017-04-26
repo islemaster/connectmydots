@@ -312,3 +312,27 @@ pre {
     padding-left: 0.5em;
   }
 }
+
+// Buttons
+button {
+  color: white;
+  background-color: $my-goldenrod;
+
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  padding: 0.4em 0.8em;
+
+  &:hover {
+    background-color: $my-yellow;
+  }
+
+  &.delete {
+    color: white;
+    background-color: $my-tomato;
+
+    &:hover {
+      background-color: red;
+    }
+  }
+}
