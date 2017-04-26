@@ -70,14 +70,20 @@ function saveData() {
 function loadData() {
   if (currentUserId) {
     loadFromRemote();
-  } else {
+  } else if (hasDataInLocalStorage()) {
     loadDataFromLocalStorage();
+  } else {
+    loadDemo();
   }
 }
 
 function saveDataToLocalStorage() {
   localStorage.setItem('cmdots-nodes', JSON.stringify(networkGraph.getNodes()));
   localStorage.setItem('cmdots-edges', JSON.stringify(networkGraph.getEdges()));
+}
+
+function hasDataInLocalStorage() {
+  return !!(localStorage.getItem('cmdots-nodes') && localStorage.getItem('cmdots-edges'));
 }
 
 function loadDataFromLocalStorage() {
@@ -93,6 +99,16 @@ function loadDataFromLocalStorage() {
   }
   networkGraph.setContent(nodes, edges);
   updateGraphVisualization();
+}
+
+function loadDemo() {
+  $.get('assets/demo.json')
+    .done(data => {
+      networkGraph.setContent(data.nodes, data.edges);
+    })
+    .fail((jqXHR, status, errorThrown) => {
+      console.warn(`${status} : ${errorThrown}`);
+    });
 }
 
 // Save once every ten seconds, at most
@@ -321,19 +337,7 @@ $(function () {
     if (!confirm("Are you sure?  This will overwrite your saved map, and cannot be undone!")) {
       return;
     }
-    $.ajax({
-      accepts: 'json',
-      cache: true,
-      dataType: 'json',
-      local: true,
-      url: 'assets/demo.json',
-      success: (data, status) => {
-        networkGraph.setContent(data.nodes, data.edges);
-      },
-      error: (jqXHR, status, errorThrown) => {
-        console && console.log(`${status} : ${errorThrown}`);
-      }
-    });
+    loadDemo();
   });
 
   $header.find('.clear-link').click(() => {

@@ -172,9 +172,6 @@ function rebuildGraph() {
 
   dataSrc = rawData;
 
-  // Put latest raw values in local storage
-  localStorage.setItem('data', rawData);
-
   try {
     data = JSON.parse(dataEditor.getValue());
     var target = document.createElement('div');
@@ -195,12 +192,4 @@ $(function () {
   dataEditor.setTheme('ace/theme/monokai');
   dataEditor.getSession().setMode('ace/mode/json');
   dataEditor.$blockScrolling = Infinity;
-
-  // Try to retrieve previous data and script from local storage
-  var storedData = localStorage.getItem('data');
-  if (storedData) {
-    dataEditor.setValue(storedData);
-  }
-
-  rebuildGraph();
 });
