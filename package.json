@@ -1,6 +1,6 @@
 {
   "name": "connectmydots",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Network visualization for arts entrepreneurs",
   "license": "GPL-2.0",
   "repository": {
@@ -31,7 +31,7 @@
     "test": "gulp test",
     "postinstall": "npm rebuild node-sass && yarn run build",
     "build": "gulp build-prod",
-    "start": "node server.js"
+    "start": "heroku local"
   },
   "author": "Brad Buchanan"
 }
