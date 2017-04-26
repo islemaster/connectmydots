@@ -33,7 +33,7 @@ export function NetworkGraph() {
       notes: ''
     };
     nodes.push(newNode);
-    nodes.sort((a, b) => a.name < b.name ? -1 : 1);
+    nodes.sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1);
     onChange();
     return newNode;
   };
