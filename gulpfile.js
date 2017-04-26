@@ -5,6 +5,7 @@ var jade = require('gulp-jade');
 var jshint = require('gulp-jshint');
 var mocha = require('gulp-mocha');
 var sass = require('gulp-sass');
+var packageJson = require('./package.json');
 
 gulp.task('clean', function (cb) {
   del(['./build/**/*'], cb);
@@ -31,7 +32,10 @@ gulp.task('babel', function () {
 gulp.task('jade', function () {
   return gulp.src('./src/*.jade')
       .pipe(jade({
-        pretty: true
+        pretty: true,
+        locals: {
+          VERSION_NUMBER: packageJson.version,
+        }
       }))
       .pipe(gulp.dest('./build'));
 });
