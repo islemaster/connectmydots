@@ -333,15 +333,16 @@ $(function () {
     loadData();
   });
 
-  $header.find('.demo-link').click(() => {
-    if (!confirm("Are you sure?  This will overwrite your saved map, and cannot be undone!")) {
-      return;
+  $header.find('.demo-link').click(event => {
+    event.preventDefault();
+    if (confirm("Are you sure?  This will overwrite your saved map, and cannot be undone!")) {
+      loadDemo();
     }
-    loadDemo();
   });
 
-  $header.find('.clear-link').click(() => {
-    if (confirm("Are you sure?  This will delete your saved graph, and cannot be undone!")) {
+  $header.find('.clear-link').click(event => {
+    event.preventDefault();
+    if (confirm("Are you sure?  This will delete your saved map, and cannot be undone!")) {
       networkGraph.clearContent();
     }
   });
