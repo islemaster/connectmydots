@@ -7,6 +7,7 @@
 export function NodeDetail(rootDiv, networkGraph, callbacks) {
   /** @type {function} */
   var selectedNode = callbacks.selectedNode;
+  let confirmingDelete = false;
 
   var render = () => {
     // Toggle selected/deselected views
@@ -22,6 +23,22 @@ export function NodeDetail(rootDiv, networkGraph, callbacks) {
 
       var notesInput = withSelectedDiv.find('#node-notes');
       notesInput.val(selectedNode().notes);
+
+      setConfirmingDelete(false);
+    }
+  };
+
+
+  const setConfirmingDelete = (confirming) => {
+    confirmingDelete = confirming;
+    const $button = rootDiv.find('button.delete');
+    const $text = $button.find('span');
+    if (confirmingDelete) {
+      $button.addClass('red');
+      $text.text('Are you sure?');
+    } else {
+      $button.removeClass('red');
+      $text.text('Delete');
     }
   };
 
@@ -35,7 +52,24 @@ export function NodeDetail(rootDiv, networkGraph, callbacks) {
     var updated = selectedNode();
     updated.notes = $(e.target).val();
     networkGraph.editNode(updated);
-  })
+  });
+
+  rootDiv.find('button.delete')
+    .click(() => {
+      if (!confirmingDelete) {
+        setConfirmingDelete(true);
+      } else {
+        setConfirmingDelete(false);
+        const node = selectedNode();
+        if (node) {
+          networkGraph.removeNode(node);
+          selectedNode(null);
+        }
+      }
+    })
+    .on('mouseleave', () => {
+      setConfirmingDelete(false);
+    });
 
   return {
     render: render
