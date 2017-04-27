@@ -264,7 +264,18 @@ function populateUserProfileDialog() {
 }
 
 function onSubmitUserProfile() {
-
+  $userProfileDialog.find('.feedback').text('');
+  $.post('/auth/edit', $userProfileDialog.find('form').serialize())
+    .done(data => {
+      toast({
+        text: 'User profile updated',
+        icon: 'success'
+      });
+      $userProfileDialog.find('form')[0].reset();
+      setSignedIn(data.currentUser);
+      $userProfileDialog.dialog('close');
+    })
+    .fail(loginFormErrorHandler($userProfileDialog, () => {}));
 }
 
 function signOut() {
@@ -282,10 +293,8 @@ function onSubmitLoginForm($dialog, url, callback) {
 
 function loginFormSuccessHandler($dialog, callback) {
   return data => {
-    $.toast({
+    toast({
       text: `Signed in as ${displayName(data.currentUser)}.`,
-      showHideTransition: 'fade',
-      position: 'top-center',
       icon: 'success'
     });
     $dialog.find('form')[0].reset();
@@ -309,6 +318,13 @@ function loginFormErrorHandler($dialog, callback) {
   };
 }
 
+function toast(options) {
+  $.toast(Object.assign({}, {
+    showHideTransition: 'fade',
+    position: 'top-center',
+  }, options));
+}
+
 function displayName(user) {
   return user.displayName || user.userId;
 }
@@ -322,7 +338,7 @@ function setSignedIn(user) {
   $header.find('.sign-out-link').show();
 }
 
-function setSignedOut({toast=true} = {}) {
+function setSignedOut({showToast=true} = {}) {
   currentUser = null;
   currentMapId = null;
   $header.find('.greeting').text('Sign in / Sign up');
@@ -330,10 +346,9 @@ function setSignedOut({toast=true} = {}) {
   $header.find('.sign-up-link').show();
   $header.find('.user-profile-link').hide();
   $header.find('.sign-out-link').hide();
-  if (toast) {
-    $.toast({
+  if (showToast) {
+    toast({
       text: 'Signed out.',
-      position: 'top-center',
       icon: 'info'
     });
   }
@@ -358,7 +373,7 @@ $(function () {
   prepareLoginDialogs();
 
   // Check login state on load
-  setSignedOut({toast: false});
+  setSignedOut({showToast: false});
   $.get('/auth/sign-in').done(data => {
     if (data.currentUser) {
       setSignedIn(data.currentUser);

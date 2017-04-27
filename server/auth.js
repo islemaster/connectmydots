@@ -105,10 +105,7 @@ module.exports = function createAuthRoutes(app) {
     const userId = (request.body.userId || '').toLowerCase();
     const password = request.body.password;
     const confirmPassword = request.body.confirmPassword;
-    const profile = {
-      displayName: request.body.displayName,
-      isEmailOkay: request.body.isEmailOkay === 'true',
-    };
+    const profile = buildProfile(request);
 
     // Username too short
     if (userId.length <= 0) {
@@ -179,6 +176,56 @@ module.exports = function createAuthRoutes(app) {
       });
     });
   });
+
+  // POST /auth/edit
+  // Edit a user
+  // Expects userId
+  // Allows displayName, isEmailOkay
+  app.post('/auth/edit', (request, response) => {
+    if (!request.body) {
+      // Totally malformed
+      response.sendStatus(400);
+      return;
+    }
+
+    const userId = (request.body.userId || '').toLowerCase();
+    const profile = buildProfile(request);
+
+    // Only the signed-in user has permission to edit their profile
+    if (!request.session.currentUser || userId !== request.session.currentUser.userId) {
+      response.sendStatus(403);
+      return;
+    }
+
+    pg.connect(process.env.DATABASE_URL, (err, client, done) => {
+      client.query(
+        'update account set profile = $1 where id = $2',
+        [profile, userId],
+        (err, result) => {
+          done();
+          if (err) {
+            console.error(err);
+            response.status(500).send('Error: ' + err);
+          } else if (result.rowCount < 1) {
+            response.sendStatus(404);
+          } else {
+            request.session.currentUser = Object.assign({}, {userId}, profile);
+            response.json({
+              currentUser: request.session.currentUser,
+              result: `User ${userId} updated`
+            });
+          }
+        }
+      );
+    });
+  });
+
+  function buildProfile(request) {
+    return {
+      displayName: request.body.displayName,
+      isEmailOkay: request.body.isEmailOkay === 'true'
+    };
+  }
 
   // Debug routes
   if (process.env.NODE_ENV !== 'production') {
