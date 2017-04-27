@@ -7,9 +7,9 @@ module.exports = function createAuthRoutes(app) {
   // Retrieve the user's current sign-in state.
   app.get('/auth/sign-in', (request, response) => {
     response.json({
-      current_user: request.session.current_user,
-      result: request.session.current_user
-        ? `Signed in as ${request.session.current_user.id}.`
+      currentUser: request.session.currentUser,
+      result: request.session.currentUser
+        ? `Signed in as ${request.session.currentUser.id}.`
         : `Signed out.`
     });
   });
@@ -19,10 +19,10 @@ module.exports = function createAuthRoutes(app) {
   // Expects user-id and password
   app.post('/auth/sign-in', (request, response) => {
     // Already signed in?  Succeed immediately.
-    if (request.session.current_user) {
+    if (request.session.currentUser) {
       response.json({
-        current_user: request.session.current_user,
-        result: `Already signed in as ${request.session.current_user.id}.`
+        currentUser: request.session.currentUser,
+        result: `Already signed in as ${request.session.currentUser.id}.`
       });
       return;
     }
@@ -69,9 +69,9 @@ module.exports = function createAuthRoutes(app) {
             return;
           }
 
-          request.session.current_user = Object.assign({}, {id}, profile);
+          request.session.currentUser = Object.assign({}, {id}, profile);
           response.json({
-            current_user: request.session.current_user,
+            currentUser: request.session.currentUser,
             result: `User ${id} signed in.`
           });
         });
@@ -84,9 +84,9 @@ module.exports = function createAuthRoutes(app) {
   app.post('/auth/sign-out', signOutHandler);
   app.get('/auth/sign-out', signOutHandler);
   function signOutHandler(request, response) {
-    delete request.session.current_user;
+    delete request.session.currentUser;
     response.json({
-      current_user: null,
+      currentUser: null,
       result: 'Signed out.'
     });
   }
@@ -168,9 +168,9 @@ module.exports = function createAuthRoutes(app) {
                 return;
               }
 
-              request.session.current_user = Object.assign({}, {id}, profile);
+              request.session.currentUser = Object.assign({}, {id}, profile);
               response.json({
-                current_user: request.session.current_user,
+                currentUser: request.session.currentUser,
                 result: `User ${id} created.`
               });
             });

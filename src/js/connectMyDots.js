@@ -257,13 +257,13 @@ function onSubmitLoginForm($dialog, url, callback) {
 function loginFormSuccessHandler($dialog, callback) {
   return data => {
     $.toast({
-      text: `Signed in as ${displayName(data.current_user)}.`,
+      text: `Signed in as ${displayName(data.currentUser)}.`,
       showHideTransition: 'fade',
       position: 'top-center',
       icon: 'success'
     });
     $dialog.find('form')[0].reset();
-    setSignedIn(data.current_user);
+    setSignedIn(data.currentUser);
     $dialog.dialog('close');
     callback();
   };
@@ -332,8 +332,8 @@ $(function () {
   // Check login state on load
   setSignedOut({toast: false});
   $.get('/auth/sign-in').done(data => {
-    if (data.current_user) {
-      setSignedIn(data.current_user);
+    if (data.currentUser) {
+      setSignedIn(data.currentUser);
     }
     loadData();
   });
