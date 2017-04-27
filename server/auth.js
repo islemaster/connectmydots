@@ -94,7 +94,7 @@ module.exports = function createAuthRoutes(app) {
   // POST /auth/sign-up
   // Create a new user
   // Expects userId, password, confirmPassword
-  // Allows display-name, is-email-okay
+  // Allows displayName, isEmailOkay
   app.post('/auth/sign-up', (request, response) => {
     if (!request.body) {
       // Totally malformed
@@ -106,8 +106,8 @@ module.exports = function createAuthRoutes(app) {
     const password = request.body.password;
     const confirmPassword = request.body.confirmPassword;
     const profile = {
-      displayName: request.body['display-name'],
-      isEmailOkay: request.body['is-email-okay'],
+      displayName: request.body.displayName,
+      isEmailOkay: request.body.isEmailOkay === 'true',
     };
 
     // Username too short
