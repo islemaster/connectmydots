@@ -9,20 +9,20 @@ module.exports = function createAuthRoutes(app) {
     response.json({
       currentUser: request.session.currentUser,
       result: request.session.currentUser
-        ? `Signed in as ${request.session.currentUser.id}.`
+        ? `Signed in as ${request.session.currentUser.userId}.`
         : `Signed out.`
     });
   });
 
   // POST /auth/sign-in
   // Attempt to sign the user in
-  // Expects user-id and password
+  // Expects userId and password
   app.post('/auth/sign-in', (request, response) => {
     // Already signed in?  Succeed immediately.
     if (request.session.currentUser) {
       response.json({
         currentUser: request.session.currentUser,
-        result: `Already signed in as ${request.session.currentUser.id}.`
+        result: `Already signed in as ${request.session.currentUser.userId}.`
       });
       return;
     }
@@ -33,12 +33,12 @@ module.exports = function createAuthRoutes(app) {
       return;
     }
 
-    const id = (request.body['user-id'] || '').toLowerCase();
+    const userId = (request.body.userId || '').toLowerCase();
     const password = request.body['password'] || '';
 
     // Look up the user
     pg.connect(process.env.DATABASE_URL, (err, client, done) => {
-      client.query('select password, profile from account where id = $1 limit 1', [id], (err, result) => {
+      client.query('select password, profile from account where id = $1 limit 1', [userId], (err, result) => {
         done();
 
         // User does not exist
@@ -54,7 +54,7 @@ module.exports = function createAuthRoutes(app) {
         const profile = result.rows[0].profile;
 
         // Check the password
-        bcrypt.compare(password, result.rows[0].password, (err, isMatch) => {
+        bcrypt.compare(password, hash, (err, isMatch) => {
           if (err) {
             console.error(err);
             response.status(500).send('Error ' + err);
@@ -69,10 +69,10 @@ module.exports = function createAuthRoutes(app) {
             return;
           }
 
-          request.session.currentUser = Object.assign({}, {id}, profile);
+          request.session.currentUser = Object.assign({}, {userId}, profile);
           response.json({
             currentUser: request.session.currentUser,
-            result: `User ${id} signed in.`
+            result: `User ${userId} signed in.`
           });
         });
       });
@@ -93,7 +93,7 @@ module.exports = function createAuthRoutes(app) {
 
   // POST /auth/sign-up
   // Create a new user
-  // Expects user-id, password, and confirm-password
+  // Expects userId, password, and confirm-password
   app.post('/auth/sign-up', (request, response) => {
     if (!request.body) {
       // Totally malformed
@@ -101,7 +101,7 @@ module.exports = function createAuthRoutes(app) {
       return;
     }
 
-    const id = (request.body['user-id'] || '').toLowerCase();
+    const userId = (request.body.userId || '').toLowerCase();
     const password = request.body['password'];
     const confirmPassword = request.body['confirm-password'];
     const profile = {
@@ -110,9 +110,9 @@ module.exports = function createAuthRoutes(app) {
     };
 
     // Username too short
-    if (id.length <= 0) {
+    if (userId.length <= 0) {
       response.status(400).json({
-        field: 'user-id',
+        field: 'userId',
         error: 'User id is too short.'
       });
       return;
@@ -137,14 +137,14 @@ module.exports = function createAuthRoutes(app) {
     }
 
     pg.connect(process.env.DATABASE_URL, (err, client, done) => {
-      client.query('select id from account where id = $1', [id], (err, result) => {
+      client.query('select id from account where id = $1', [userId], (err, result) => {
 
         // User id is taken
         if (result.rows.length > 0) {
           done();
           response.status(400).json({
-            field: 'user-id',
-            error: `The user id ${id} is already taken.`
+            field: 'userId',
+            error: `The user id ${userId} is already taken.`
           });
           return;
         }
@@ -168,10 +168,10 @@ module.exports = function createAuthRoutes(app) {
                 return;
               }
 
-              request.session.currentUser = Object.assign({}, {id}, profile);
+              request.session.currentUser = Object.assign({}, {userId}, profile);
               response.json({
                 currentUser: request.session.currentUser,
-                result: `User ${id} created.`
+                result: `User ${useId} created.`
               });
             });
         });

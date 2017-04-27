@@ -284,7 +284,7 @@ function loginFormErrorHandler($dialog, callback) {
 }
 
 function displayName(user) {
-  return user.displayName || user.id;
+  return user.displayName || user.userId;
 }
 
 function setSignedIn(user) {
