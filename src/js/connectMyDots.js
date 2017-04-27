@@ -120,8 +120,9 @@ function loadDemo() {
 
 // Save once every ten seconds, at most
 const remoteSaveFrequency = 10000;
+const remoteSaveDebounce = 10;
 let isSaveInProgress = false;
-const saveToRemote = $.throttle(remoteSaveFrequency, function () {
+const saveToRemote = $.debounce(remoteSaveDebounce, $.throttle(remoteSaveFrequency, function () {
   if (!currentUser || isSaveInProgress) {
     return;
   }
@@ -157,7 +158,7 @@ const saveToRemote = $.throttle(remoteSaveFrequency, function () {
       })
       .always(() => isSaveInProgress = false);
   }
-});
+}));
 
 function loadFromRemote() {
   $.get('/api/map/latest')
