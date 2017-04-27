@@ -53,7 +53,7 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE account (
-    id character varying(40) NOT NULL,
+    id text NOT NULL,
     password text NOT NULL,
     profile jsonb DEFAULT '{}'::json
 );
@@ -67,7 +67,7 @@ ALTER TABLE account OWNER TO brad;
 
 CREATE TABLE map (
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    owner character varying(40) NOT NULL,
+    owner text NOT NULL,
     data jsonb NOT NULL,
     name text NOT NULL,
     is_public boolean DEFAULT false NOT NULL,
@@ -111,7 +111,7 @@ ALTER TABLE ONLY session
 --
 
 ALTER TABLE ONLY map
-    ADD CONSTRAINT map_owner_fkey FOREIGN KEY (owner) REFERENCES account(id);
+    ADD CONSTRAINT map_owner_fkey FOREIGN KEY (owner) REFERENCES account(id) ON DELETE CASCADE;
 
 
 --
