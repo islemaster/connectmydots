@@ -8,9 +8,8 @@ module.exports = function createAuthRoutes(app) {
   app.get('/auth/sign-in', (request, response) => {
     response.json({
       current_user: request.session.current_user,
-      profile: request.session.profile,
       result: request.session.current_user
-        ? `Signed in as ${request.session.current_user}.`
+        ? `Signed in as ${request.session.current_user.id}.`
         : `Signed out.`
     });
   });
@@ -23,8 +22,7 @@ module.exports = function createAuthRoutes(app) {
     if (request.session.current_user) {
       response.json({
         current_user: request.session.current_user,
-        profile: request.session.profile,
-        result: `Already signed in as ${request.session.current_user}.`
+        result: `Already signed in as ${request.session.current_user.id}.`
       });
       return;
     }
@@ -52,6 +50,9 @@ module.exports = function createAuthRoutes(app) {
           return;
         }
 
+        const hash = result.rows[0].password;
+        const profile = result.rows[0].profile;
+
         // Check the password
         bcrypt.compare(password, result.rows[0].password, (err, isMatch) => {
           if (err) {
@@ -68,11 +69,9 @@ module.exports = function createAuthRoutes(app) {
             return;
           }
 
-          request.session.current_user = id;
-          request.session.profile = profile;
+          request.session.current_user = Object.assign({}, {id}, profile);
           response.json({
-            current_user: id,
-            profile: profile,
+            current_user: request.session.current_user,
             result: `User ${id} signed in.`
           });
         });
@@ -82,17 +81,15 @@ module.exports = function createAuthRoutes(app) {
 
   // GET/POST /auth/sign-out
   // End the user's session
+  app.post('/auth/sign-out', signOutHandler);
+  app.get('/auth/sign-out', signOutHandler);
   function signOutHandler(request, response) {
     delete request.session.current_user;
-    delete request.session.profile;
     response.json({
       current_user: null,
-      profile: null,
       result: 'Signed out.'
     });
   }
-  app.post('/auth/sign-out', signOutHandler);
-  app.get('/auth/sign-out', signOutHandler);
 
   // POST /auth/sign-up
   // Create a new user
@@ -171,11 +168,9 @@ module.exports = function createAuthRoutes(app) {
                 return;
               }
 
-              request.session.current_user = id;
-              request.session.profile = profile;
+              request.session.current_user = Object.assign({}, {id}, profile);
               response.json({
-                current_user: id,
-                profile: profile,
+                current_user: request.session.current_user,
                 result: `User ${id} created.`
               });
             });

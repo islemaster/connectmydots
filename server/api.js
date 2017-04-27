@@ -7,7 +7,7 @@ module.exports = function createApiRoutes(app) {
   // GET /api/map/latest
   // Retrieve the current user's most recently edited map
   app.get('/api/map/latest', (request, response) => {
-    const owner = request.session.current_user;
+    const owner = request.session.current_user.id;
 
     if (!owner) {
       response.sendStatus(403);
@@ -42,7 +42,7 @@ module.exports = function createApiRoutes(app) {
   // Only available to the map owner, all others receive a 404.
   app.get('/api/map/:uuid', (request, response) => {
     const id = request.params.uuid;
-    const owner = request.session.current_user;
+    const owner = request.session.current_user.id;
 
     // TODO: We will eventually allow sharing, in which case a more granular approach is called for.
     if (!owner) {
@@ -77,7 +77,7 @@ module.exports = function createApiRoutes(app) {
   // Edit a map object
   app.post('/api/map/:uuid', (request, response) => {
     const id = request.params.uuid;
-    const owner = request.session.current_user;
+    const owner = request.session.current_user.id;
     const data = request.body['data'];
 
     // You must be logged in to edit a map
@@ -117,7 +117,7 @@ module.exports = function createApiRoutes(app) {
   // POST /api/map
   // Create a new map object
   app.post('/api/map', (request, response) => {
-    const owner = request.session.current_user;
+    const owner = request.session.current_user.id;
     const data = request.body['data'];
 
     // You must be logged in to create a map

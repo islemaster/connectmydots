@@ -5,8 +5,7 @@ var selectedNode_ = null;
 
 var graphView = new GraphView();
 
-let currentUserId = null;
-let currentUserProfile = null;
+let currentUser = null;
 let currentMapId = null;
 let lastRemoteSave = null;
 
@@ -69,7 +68,7 @@ function saveData() {
 }
 
 function loadData() {
-  if (currentUserId) {
+  if (currentUser) {
     loadFromRemote();
   } else if (hasDataInLocalStorage()) {
     loadDataFromLocalStorage();
@@ -106,6 +105,7 @@ function loadDemo() {
   $.get('assets/demo.json')
     .done(data => {
       networkGraph.setContent(data.nodes, data.edges);
+      selectedNode(null);
     })
     .fail((jqXHR, status, errorThrown) => {
       console.warn(`${status} : ${errorThrown}`);
@@ -116,7 +116,7 @@ function loadDemo() {
 const remoteSaveFrequency = 10000;
 let isSaveInProgress = false;
 const saveToRemote = $.throttle(remoteSaveFrequency, function () {
-  if (!currentUserId || isSaveInProgress) {
+  if (!currentUser || isSaveInProgress) {
     return;
   }
 
@@ -257,13 +257,13 @@ function onSubmitLoginForm($dialog, url, callback) {
 function loginFormSuccessHandler($dialog, callback) {
   return data => {
     $.toast({
-      text: `Signed in as ${data.current_user}.`,
+      text: `Signed in as ${displayName(data.current_user)}.`,
       showHideTransition: 'fade',
       position: 'top-center',
       icon: 'success'
     });
     $dialog.find('form')[0].reset();
-    setSignedIn(data.current_user, data.profile);
+    setSignedIn(data.current_user);
     $dialog.dialog('close');
     callback();
   };
@@ -283,18 +283,20 @@ function loginFormErrorHandler($dialog, callback) {
   };
 }
 
-function setSignedIn(userId, profile) {
-  currentUserId = userId;
-  currentUserProfile = profile;
-  const displayName = currentUserProfile.displayName || currentUserId;
-  $header.find('.greeting').text(`Hi, ${displayName}`);
+function displayName(user) {
+  return user.displayName || user.id;
+}
+
+function setSignedIn(user) {
+  currentUser = user;
+  $header.find('.greeting').text(`Hi, ${displayName(user)}`);
   $header.find('.sign-in-link').hide();
   $header.find('.sign-up-link').hide();
   $header.find('.sign-out-link').show();
 }
 
 function setSignedOut({toast=true} = {}) {
-  currentUserId = null;
+  currentUser = null;
   currentMapId = null;
   $header.find('.greeting').text('Sign in / Sign up');
   $header.find('.sign-in-link').show();
@@ -331,7 +333,7 @@ $(function () {
   setSignedOut({toast: false});
   $.get('/auth/sign-in').done(data => {
     if (data.current_user) {
-      setSignedIn(data.current_user, data.profile);
+      setSignedIn(data.current_user);
     }
     loadData();
   });
@@ -347,6 +349,7 @@ $(function () {
     event.preventDefault();
     if (confirm("Are you sure?  This will delete your saved map, and cannot be undone!")) {
       networkGraph.clearContent();
+      selectedNode(null);
     }
   });
 
