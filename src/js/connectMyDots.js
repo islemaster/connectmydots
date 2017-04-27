@@ -73,7 +73,7 @@ function loadData() {
   } else if (hasDataInLocalStorage()) {
     loadDataFromLocalStorage();
   } else {
-    loadDemo();
+    clearGraph();
   }
 }
 
@@ -99,6 +99,12 @@ function loadDataFromLocalStorage() {
   }
   networkGraph.setContent(nodes, edges);
   updateGraphVisualization();
+}
+
+function clearGraph() {
+  networkGraph.clearContent();
+  const you =networkGraph.addNode('You');
+  selectedNode(you);
 }
 
 function loadDemo() {
@@ -391,8 +397,7 @@ $(function () {
   $header.find('.clear-link').click(event => {
     event.preventDefault();
     if (confirm("Are you sure?  This will delete your saved map, and cannot be undone!")) {
-      networkGraph.clearContent();
-      selectedNode(null);
+      clearGraph();
     }
   });
 
