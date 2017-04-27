@@ -10,7 +10,7 @@ let currentMapId = null;
 let lastRemoteSave = null;
 
 let $header;
-let $signInDialog, $signUpDialog;
+let $signInDialog, $signUpDialog, $userProfileDialog;
 
 /**
  * Getter/setter for selected node
@@ -196,6 +196,15 @@ function prepareLoginDialogs() {
     resizable: false,
   });
 
+  $userProfileDialog = $('#user-profile');
+  $userProfileDialog.dialog({
+    autoOpen: false,
+    title: "User Profile",
+    width: 700,
+    modal: true,
+    resizable: false,
+  });
+
   $signUpDialog.find('.sign-in-link').click(event => {
     $signUpDialog.dialog('close');
     $signInDialog.dialog('open');
@@ -219,6 +228,12 @@ function prepareLoginDialogs() {
     event.preventDefault();
   });
 
+  $header.find('.user-profile-link').click(event => {
+    $userProfileDialog.dialog('open');
+    populateUserProfileDialog();
+    event.preventDefault();
+  });
+
   $header.find('.sign-out-link').click(event => {
     signOut();
     event.preventDefault();
@@ -239,6 +254,17 @@ function onSubmitSignUp() {
       saveData();
     }
   });
+}
+
+function populateUserProfileDialog() {
+  $userProfileDialog.find('input[name="userId"]').val(currentUser.userId);
+  $userProfileDialog.find('input[name="displayName"]').val(currentUser.displayName);
+  $userProfileDialog.find('input[name="isEmailOkay"][value="true"]').prop("checked", currentUser.isEmailOkay);
+  $userProfileDialog.find('input[name="isEmailOkay"][value="false"]').prop("checked", !currentUser.isEmailOkay);
+}
+
+function onSubmitUserProfile() {
+
 }
 
 function signOut() {
@@ -292,6 +318,7 @@ function setSignedIn(user) {
   $header.find('.greeting').text(`Hi, ${displayName(user)}`);
   $header.find('.sign-in-link').hide();
   $header.find('.sign-up-link').hide();
+  $header.find('.user-profile-link').show();
   $header.find('.sign-out-link').show();
 }
 
@@ -301,6 +328,7 @@ function setSignedOut({toast=true} = {}) {
   $header.find('.greeting').text('Sign in / Sign up');
   $header.find('.sign-in-link').show();
   $header.find('.sign-up-link').show();
+  $header.find('.user-profile-link').hide();
   $header.find('.sign-out-link').hide();
   if (toast) {
     $.toast({
