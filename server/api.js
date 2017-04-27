@@ -83,7 +83,7 @@ module.exports = function createApiRoutes(app) {
   app.post('/api/map/:uuid', (request, response) => {
     const id = request.params.uuid;
     const owner = getOwner(request);
-    const data = request.body['data'];
+    const data = request.body.data || {};
 
     // You must be logged in to edit a map
     if (!owner) {
