@@ -34,7 +34,7 @@ module.exports = function createAuthRoutes(app) {
     }
 
     const userId = (request.body.userId || '').toLowerCase();
-    const password = request.body['password'] || '';
+    const password = request.body.password || '';
 
     // Look up the user
     pg.connect(process.env.DATABASE_URL, (err, client, done) => {
@@ -93,7 +93,8 @@ module.exports = function createAuthRoutes(app) {
 
   // POST /auth/sign-up
   // Create a new user
-  // Expects userId, password, and confirm-password
+  // Expects userId, password, confirmPassword
+  // Allows display-name, is-email-okay
   app.post('/auth/sign-up', (request, response) => {
     if (!request.body) {
       // Totally malformed
@@ -102,8 +103,8 @@ module.exports = function createAuthRoutes(app) {
     }
 
     const userId = (request.body.userId || '').toLowerCase();
-    const password = request.body['password'];
-    const confirmPassword = request.body['confirm-password'];
+    const password = request.body.password;
+    const confirmPassword = request.body.confirmPassword;
     const profile = {
       displayName: request.body['display-name'],
       isEmailOkay: request.body['is-email-okay'],
@@ -130,7 +131,7 @@ module.exports = function createAuthRoutes(app) {
     // Passwords don't match
     if (!confirmPassword || password !== confirmPassword) {
       response.status(400).json({
-        field: 'confirm-password',
+        field: 'confirmPassword',
         error: 'Passwords do not match.'
       });
       return;
@@ -159,7 +160,7 @@ module.exports = function createAuthRoutes(app) {
 
           client.query(
             'insert into account (id, password, profile) values ($1, $2, $3)',
-            [id, hash, profile],
+            [userId, hash, profile],
             err => {
               done();
               if (err) {
@@ -171,7 +172,7 @@ module.exports = function createAuthRoutes(app) {
               request.session.currentUser = Object.assign({}, {userId}, profile);
               response.json({
                 currentUser: request.session.currentUser,
-                result: `User ${useId} created.`
+                result: `User ${userId} created.`
               });
             });
         });
