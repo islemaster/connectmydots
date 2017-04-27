@@ -8,6 +8,7 @@ module.exports = function createAuthRoutes(app) {
   app.get('/auth/sign-in', (request, response) => {
     response.json({
       current_user: request.session.current_user,
+      profile: request.session.profile,
       result: request.session.current_user
         ? `Signed in as ${request.session.current_user}.`
         : `Signed out.`
@@ -22,6 +23,7 @@ module.exports = function createAuthRoutes(app) {
     if (request.session.current_user) {
       response.json({
         current_user: request.session.current_user,
+        profile: request.session.profile,
         result: `Already signed in as ${request.session.current_user}.`
       });
       return;
@@ -38,7 +40,7 @@ module.exports = function createAuthRoutes(app) {
 
     // Look up the user
     pg.connect(process.env.DATABASE_URL, (err, client, done) => {
-      client.query('select password from account where id = $1 limit 1', [id], (err, result) => {
+      client.query('select password, profile from account where id = $1 limit 1', [id], (err, result) => {
         done();
 
         // User does not exist
@@ -67,8 +69,10 @@ module.exports = function createAuthRoutes(app) {
           }
 
           request.session.current_user = id;
+          request.session.profile = profile;
           response.json({
             current_user: id,
+            profile: profile,
             result: `User ${id} signed in.`
           });
         });
@@ -80,8 +84,10 @@ module.exports = function createAuthRoutes(app) {
   // End the user's session
   function signOutHandler(request, response) {
     delete request.session.current_user;
+    delete request.session.profile;
     response.json({
       current_user: null,
+      profile: null,
       result: 'Signed out.'
     });
   }
@@ -101,6 +107,10 @@ module.exports = function createAuthRoutes(app) {
     const id = (request.body['user-id'] || '').toLowerCase();
     const password = request.body['password'];
     const confirmPassword = request.body['confirm-password'];
+    const profile = {
+      displayName: request.body['display-name'],
+      isEmailOkay: request.body['is-email-okay'],
+    };
 
     // Username too short
     if (id.length <= 0) {
@@ -151,8 +161,8 @@ module.exports = function createAuthRoutes(app) {
           }
 
           client.query(
-            'insert into account (id, password) values ($1, $2)',
-            [id, hash],
+            'insert into account (id, password, profile) values ($1, $2, $3)',
+            [id, hash, profile],
             err => {
               done();
               if (err) {
@@ -162,8 +172,10 @@ module.exports = function createAuthRoutes(app) {
               }
 
               request.session.current_user = id;
+              request.session.profile = profile;
               response.json({
                 current_user: id,
+                profile: profile,
                 result: `User ${id} created.`
               });
             });

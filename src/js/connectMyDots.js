@@ -6,6 +6,7 @@ var selectedNode_ = null;
 var graphView = new GraphView();
 
 let currentUserId = null;
+let currentUserProfile = null;
 let currentMapId = null;
 let lastRemoteSave = null;
 
@@ -262,7 +263,7 @@ function loginFormSuccessHandler($dialog, callback) {
       icon: 'success'
     });
     $dialog.find('form')[0].reset();
-    setSignedIn(data.current_user);
+    setSignedIn(data.current_user, data.profile);
     $dialog.dialog('close');
     callback();
   };
@@ -282,9 +283,11 @@ function loginFormErrorHandler($dialog, callback) {
   };
 }
 
-function setSignedIn(userId) {
+function setSignedIn(userId, profile) {
   currentUserId = userId;
-  $header.find('.greeting').text(`Hi, ${userId}`);
+  currentUserProfile = profile;
+  const displayName = currentUserProfile.displayName || currentUserId;
+  $header.find('.greeting').text(`Hi, ${displayName}`);
   $header.find('.sign-in-link').hide();
   $header.find('.sign-up-link').hide();
   $header.find('.sign-out-link').show();
@@ -328,7 +331,7 @@ $(function () {
   setSignedOut({toast: false});
   $.get('/auth/sign-in').done(data => {
     if (data.current_user) {
-      setSignedIn(data.current_user);
+      setSignedIn(data.current_user, data.profile);
     }
     loadData();
   });
