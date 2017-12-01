@@ -1,25 +1,37 @@
 {
   "name": "connectmydots",
-  "version": "0.3.0",
-  "description": "Professional Network Visualization",
-  "main": "package.js",
-  "dependencies": {
-    "gulp": "^3.9.0",
-    "normalize.css": "^3.0.3"
+  "version": "0.6.2",
+  "description": "Network visualization for arts entrepreneurs",
+  "license": "GPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/islemaster/connectmydots"
   },
-  "devDependencies": {
+  "engines": {
+    "node": "^6.11.1"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.17.1",
+    "connect-pg-simple": "^3.1.2",
     "del": "^1.2.0",
+    "express": "^4.15.2",
+    "express-session": "^1.15.2",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.1.0",
     "gulp-jade": "^1.0.1",
     "gulp-jshint": "^1.11.0",
     "gulp-mocha": "^2.1.2",
     "gulp-sass": "^2.0.1",
+    "normalize.css": "^3.0.3",
+    "pg": "^6.1.5",
     "seedrandom": "^2.4.0"
   },
   "scripts": {
-    "test": "test"
+    "test": "gulp test",
+    "postinstall": "npm rebuild node-sass && yarn run build",
+    "build": "gulp build-prod",
+    "start": "heroku local"
   },
-  "author": "Brad Buchanan",
-  "license": "GNU GPL 2"
+  "author": "Brad Buchanan"
 }

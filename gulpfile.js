@@ -5,6 +5,7 @@ var jade = require('gulp-jade');
 var jshint = require('gulp-jshint');
 var mocha = require('gulp-mocha');
 var sass = require('gulp-sass');
+var packageJson = require('./package.json');
 
 gulp.task('clean', function (cb) {
   del(['./build/**/*'], cb);
@@ -31,7 +32,10 @@ gulp.task('babel', function () {
 gulp.task('jade', function () {
   return gulp.src('./src/*.jade')
       .pipe(jade({
-        pretty: true
+        pretty: true,
+        locals: {
+          VERSION_NUMBER: packageJson.version,
+        }
       }))
       .pipe(gulp.dest('./build'));
 });
@@ -59,6 +63,8 @@ gulp.task('test', ['babel', 'babel-test'], function () {
   return gulp.src('./build/test/*.js')
       .pipe(mocha({reporter: 'spec'}));
 });
+
+gulp.task('build-prod', ['copy-lib', 'copy-assets', 'babel', 'jade', 'sass']);
 
 gulp.task('default', ['copy-lib', 'copy-assets', 'babel', 'jade', 'sass'], function () {
   gulp.watch('./src/**/*.js', ['babel', 'test']);

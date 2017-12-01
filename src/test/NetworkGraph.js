@@ -27,6 +27,28 @@ describe('NetworkGraph', function () {
     );
   });
 
+  it('keeps nodes sorted', () => {
+    graph.addNode('c');
+    graph.addNode('a');
+    graph.addNode('d');
+    graph.addNode('b');
+    assert.deepEqual(
+      ['a', 'b', 'c', 'd'],
+      graph.getNodes().map(n => n.name)
+    );
+  });
+
+  it('uses case-insensitive sorting', () => {
+    graph.addNode('C');
+    graph.addNode('a');
+    graph.addNode('d');
+    graph.addNode('B');
+    assert.deepEqual(
+      ['a', 'B', 'C', 'd'],
+      graph.getNodes().map(n => n.name)
+    );
+  });
+
   it('allows two nodes with same name', () => {
     var nodeA = graph.addNode('Alleson');
     var nodeB = graph.addNode('Alleson');

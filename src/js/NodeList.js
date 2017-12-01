@@ -89,19 +89,6 @@ export function NodeList(rootDiv, networkGraph, callbacks) {
     }
   });
 
-  // Capture backspace/delete for removing nodes
-  $('html').keydown(e => {
-    var target = $(e.target);
-    if (!(target.is('input') || target.is('textarea'))) {
-      if (e.which === 8 || e.which === 46) { // backspace or delete
-        e.preventDefault();
-        if (selectedNode()) {
-          networkGraph.removeNode(selectedNode());
-        }
-      }
-    }
-  });
-
   // Export the public interface
   return {
     render: render

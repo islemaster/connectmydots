@@ -1,0 +1,91 @@
+#sign-in
+  form(onsubmit="onSubmitSignIn(); return false;")
+    table
+      tbody
+        tr
+          th Email
+          td
+            input(name="userId")
+          td.userId.feedback
+        tr
+          th Password
+          td
+            input(name="password" type="password")
+          td.password.feedback
+        tr
+          th
+          td(colspan=2)
+            input(type="submit" value="Sign In")
+            span.general.feedback
+        tr
+          th
+          td(colspan=2) Don't have an account? <a href="#" class="sign-up-link">Click here to sign up.</a>
+
+#sign-up
+  form(onsubmit="onSubmitSignUp(); return false;")
+    table
+      tbody
+        tr
+          th Email
+          td
+            input(name="userId" placeholder="you@example.com")
+          td.userId.feedback
+        tr
+          th Password
+          td
+            input(name="password" type="password")
+          td.password.feedback
+        tr
+          th Confirm Password
+          td
+            input(name="confirmPassword" type="password")
+          td.confirmPassword.feedback
+        tr
+          th Display Name
+          td
+            input(name="displayName" placeholder="Alleson")
+          td.displayName.feedback
+        tr
+          th
+          td(colspan=2)
+            | Stay connected with email updates?
+            input(type="radio" name="isEmailOkay" value="true" checked)
+            | &nbsp;Yes
+            input(type="radio" name="isEmailOkay" value="false")
+            | &nbsp;No
+        tr
+          th
+          td(colspan=2)
+            input(type="submit" value="Sign Up")
+            span.general.feedback
+        tr
+          th
+          td(colspan=2) Already have an account? <a href="#" class="sign-in-link">Click here to sign in.</a>
+
+#user-profile
+  form(onsubmit="onSubmitUserProfile(); return false;")
+    table
+      tbody
+        tr
+          th Email
+          td
+            input(name="userId" readonly)
+          td.userId.feedback
+        tr
+          th Display Name
+          td
+            input(name="displayName")
+          td.displayName.feedback
+        tr
+          th
+          td(colspan=2)
+            | Stay connected with email updates?
+            input(type="radio" name="isEmailOkay" value="true" checked)
+            | &nbsp;Yes
+            input(type="radio" name="isEmailOkay" value="false")
+            | &nbsp;No
+        tr
+          th
+          td(colspan=2)
+            input(type="submit" value="Update Your Profile")
+            span.general.feedback

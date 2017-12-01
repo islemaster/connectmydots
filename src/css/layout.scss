@@ -17,7 +17,10 @@ html, body {
     flex: 0 0 auto;
 
     .button {
-      float: right;
+      display: inline-block;
+      &.right {
+        float: right;
+      }
     }
   }
 
@@ -35,8 +38,8 @@ html, body {
         flex: 0 0 auto;
       }
 
-      .collapsable {
-        flex: 1 1 auto;
+      #node-list, #node-detail {
+        flex: 1 1 50%;
         overflow-y: auto;
       }
 
@@ -67,5 +70,12 @@ html, body {
 
   .footer-row {
     flex: 0 0 auto;
+  }
+}
+
+.button-row {
+  margin: 6px 0;
+  button {
+    float: right;
   }
 }

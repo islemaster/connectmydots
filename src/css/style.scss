@@ -1,8 +1,10 @@
 $my-blue: #105B63;
+$light-blue: #176F77;
 $my-beige: #FFFAD5;
 $my-yellow: #FFD34E;
 $my-goldenrod: #DB9E36;
 $my-tomato: #BD4932;
+$light-tomato: #DB4C34;
 $whitesmoke: #eee;
 
 $header_gray: #2F3129;
@@ -51,6 +53,7 @@ kbd // Credit: http://meta.superuser.com/questions/4788/css-for-the-new-kbd-styl
   background-color: $header_gray;
 
   h1 {
+    display: inline-block;
     font-family: sans-serif;
     font-size: 14pt;
     line-height: 16pt;
@@ -72,7 +75,7 @@ kbd // Credit: http://meta.superuser.com/questions/4788/css-for-the-new-kbd-styl
   .button {
     padding: 8px;
     cursor: pointer;
-    text-decoration: underline;
+    text-decoration: none;
 
     &:hover {
       color: $my-yellow;
@@ -82,7 +85,7 @@ kbd // Credit: http://meta.superuser.com/questions/4788/css-for-the-new-kbd-styl
 
 .footer-row {
   padding: 3px;
-  color: whitesmoke;
+  color: #828983;
   background-color: $header_gray;
   text-align: right;
   font-family: sans-serif;
@@ -242,5 +245,104 @@ pre {
       color: black;
       width: 100%;
     }
+  }
+}
+
+// Dropdown menus in header
+.dropdown-root {
+  position: relative;
+
+  .dropdown-content {
+    display: none;
+
+    position: absolute;
+    left: 0;
+    right: auto;
+    top: 100%;
+    background-color: $header_gray;
+    min-width: 100%;
+    white-space: nowrap;
+    -webkit-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+
+    a {
+      color: $whitesmoke;
+      padding: 12px 16px;
+      text-decoration: none;
+      text-align: left;
+      display: block;
+      &:hover {
+        color: $header_gray;
+        background-color: whitesmoke;
+      }
+    }
+  }
+
+  &.right {
+    .dropdown-content {
+      right: 0;
+      left: auto;
+      a {
+        text-align: right;
+      }
+    }
+  }
+
+  &:hover {
+    .dropdown-content {
+      display: block;
+    }
+  }
+}
+
+// Dialogs
+#sign-in, #sign-up, #user-profile {
+  th, td {
+    padding: 0.5em;
+  }
+
+  th {
+    text-align: right;
+  }
+
+  input {
+    padding: 0.2em;
+  }
+
+  .feedback {
+    color: $my-tomato;
+  }
+
+  .general.feedback {
+    padding-left: 0.5em;
+  }
+}
+
+// Buttons
+button {
+  color: $my-beige;
+  background-color: $my-blue;
+
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  padding: 0.4em 0.8em 0.4em 0.6em;
+
+  &:hover {
+    background-color: $light-blue;
+  }
+
+  &.red {
+    color: $my-beige;
+    background-color: $my-tomato;
+
+    &:hover {
+      background-color: $light-tomato;
+    }
+  }
+
+  span {
+    margin-left: 0.3em;
   }
 }

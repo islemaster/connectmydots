@@ -1,5 +1,15 @@
 .header-row
-  .button.about About
-  .button.clearContent Clear
-  .button.loadDemoContent Demo
+  .button.right.dropdown-root
+    span &nbsp;▾&nbsp;
+    span.greeting
+    .dropdown-content
+      a.sign-in-link(href="#") Sign in
+      a.sign-up-link(href="#") Sign up
+      //a.demo-link(href="#") Load demo // Re-enable when we have an updated demo
+      a.clear-link(href="#") Clear map
+      a.user-profile-link(href="#") User profile
+      a.sign-out-link(href="#") Sign out
+  .button.right.about About
   h1 Connect <span>My</span> Dots
+  .button.last-saved
+    | Sign up to save across devices.
